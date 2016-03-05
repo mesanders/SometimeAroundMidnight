@@ -13,7 +13,7 @@ import scala.io.Source
   */
 class User(gender: Char, ageRange: String, country: String, accountAgeWeeks: Int, userId: String) {
   def this() {
-    this('u', "45-55", "US", 35, "hellouser")
+    this('u', "unknown", "unkown", -1, "unknown")
   }
 
   class SongRecord(msPlayedTime: Double, context: String, trackId: String, product: String, endTimestamp: Int, userId: String) {
@@ -42,6 +42,9 @@ object User {
   }
 
   def convertCsvUser(line: String): User = {
+    val split = line.split(",")
+    val gender: Char = if (line(0).toString.isEmpty) 'u' else line(0).toChar
+
     new User();
   }
 
