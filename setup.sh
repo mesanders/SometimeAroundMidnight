@@ -4,35 +4,53 @@ function log {
 	echo "$(date "+%D %T") INFO: $1"  
 }
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DATADIR=${DIR}/data
+HEADERDIR=${DATADIR}/withheader
+ZIPDATA=data_sample.tgz
+USERDATA=user_data_sample.csv
+SONGDATA=end_song_sample.csv
+
 log "Downloading files"
 wget https://storage.googleapis.com/ml_take_home/data_sample.tgz
 
 log "Creating data directory and moving data sample to new directory."
-mkdir data
-mkdir data/withheader
-mv data_sample.tgz data
+mkdir -p $HEADERDIR
+mv ${ZIPDATA} ${DATADIR}
 
 log "Extracting data_sample into the data driectory"
-tar -xzf data/data_sample.tgz -C data
+tar -xzf ${DATADIR}/${ZIPDATA} -C ${DATADIR}
 
 log "Removing top line of each file: "
-head -1 data/end_song_sample.csv > data/withheader/end_song_sample.csv
-head -1 data/user_data_sample.csv > data/withheader/user_data_sample.csv 
-sed -i '1d' data/end_song_sample.csv
-sed -i '1d' data/user_data_sample.csv
+head -1 ${DATADIR}/${SONGDATA} > ${HEADERDIR}/${SONGDATA}
+head -1 ${DATADIR}/${USERDATA} > ${HEADERDIR}/${USERDATA} 
+sed -i '1d' ${DATADIR}/${USERDATA}
+sed -i '1d' ${DATADIR}/${SONGDATA}
 
 log "Sorting each file and removing any duplicates."
-sort data/end_song_sample.csv -o data/end_song_sample.csv
-uniq data/end_song_sample.csv > data/end_song_sample_uniq.csv
-sort data/user_data_sample.csv -o data/user_data_sample.csv 
-uniq data/user_data_sample.csv > data/user_data_sample_uniq.csv
+sort ${DATADIR}/${SONGDATA} -o ${DATADIR}/${SONGDATA}
+uniq ${DATADIR}/${SONGDATA} > ${DATADIR}/end_song_sample_uniq.csv
+sort ${DATADIR}/${USERDATA} -o ${DATADIR}/${USERDATA} 
+uniq ${DATADIR}/${USERDATA} > ${DATADIR}/user_data_sample_uniq.csv
 
-log "Number of duplicates in end_song_sample: $(comm data/end_song_sample.csv data/end_song_sample_uniq.csv -23 | wc -l)"
-log "Number of duplicates in user_data_sample: $(comm data/user_data_sample.csv data/user_data_sample_uniq.csv -23 | wc -l)" 
+log "Number of duplicates in end_song_sample: $(comm ${DATADIR}/${SONGDATA} data/end_song_sample_uniq.csv -23 | wc -l)"
+log "Number of duplicates in user_data_sample: $(comm ${DATADIR}/${USERDATA} data/user_data_sample_uniq.csv -23 | wc -l)" 
 log "Moving the original files to data/withheaders and adding the headers back now that they are sorted."
-rm data/user_data_sample.csv data/end_song_sample.csv
+rm ${DATADIR}/${USERDATA} ${DATADIR}/${SONGDATA}
 
-mv data/user_data_sample_uniq.csv data/user_data_sample.csv
-mv data/end_song_sample_uniq.csv data/end_song_sample.csv
-cat data/user_data_sample.csv >> data/withheader/user_data_sample.csv
-cat data/end_song_sample.csv >> data/withheader/end_song_sample.csv
+mv ${DATADIR}/user_data_sample_uniq.csv ${DATADIR}/${USERDATA}
+mv ${DATADIR}/end_song_sample_uniq.csv ${DATADIR}/${SONGDATA}
+cat ${DATADIR}/${USERDATA} >> ${HEADERDIR}/${USERDATA}
+cat ${DATADIR}/${SONGDATA} >> ${HEADERDIR}/${SONGDATA}
+
+sqlite3 --version >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	log "Launching sqlite3 script" 
+	sqlite3 < lite_analysis.sql
+fi
+
+mvn --version >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+	log "Testing scala code: "
+	mvn test 
+fi

@@ -13,7 +13,7 @@ import scala.io.Source
   */
 class User(gender: Char, ageRange: String, country: String, accountAgeWeeks: Int, userId: String) {
   def this() {
-    this('unknown)
+    this('u', "45-55", "US", 35, "hellouser")
   }
 
   class SongRecord(msPlayedTime: Double, context: String, trackId: String, product: String, endTimestamp: Int, userId: String) {
