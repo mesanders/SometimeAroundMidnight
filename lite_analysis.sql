@@ -7,6 +7,14 @@
 .import data/withheader/end_song_sample.csv endsong
 
 .print
+.print "Describe the User Table."
+PRAGMA table_info( users);
+
+.print
+.print "Describe the End Song Table." 
+PRAGMA table_info(endsong);
+
+.print
 .print "Number of total users in the user table."
 SELECT COUNT(*) FROM users;
 
@@ -30,17 +38,15 @@ SELECT COUNT(*) FROM endsong;
 .print "Number of Users in endsong table that are not in the users table"
 SELECT COUNT(DISTINCT user_id) FROM endsong WHERE user_id NOT IN (SELECT user_ID FROM users);
 
+
+.print
+.print "List of distinct contexts and the number of times each one was played:"
+SELECT DISTINCT context, COUNT(*) as COUNT FROM endsong GROUP BY context ORDER BY COUNT DESC; 
+
 .print
 .print "Top 20 Users who listen to music"
 SELECT endsong.user_id, gender, country, acct_age_weeks, COUNT(endsong.user_id) as DUPS FROM endsong JOIN users ON endsong.user_id = users.user_id GROUP BY endsong.user_id ORDER BY DUPS DESC LIMIT 20;
 
-.print
-.print "Describe the User Table."
-PRAGMA table_info( users);
-
-.print
-.print "Describe the End Song Table." 
-PRAGMA table_info(endsong);
 
 .print
 .print "Distinct Gender in the Users Table:"
@@ -70,3 +76,12 @@ SELECT COUNT(*) AS NUM_USERS FROM users WHERE country = 'US';
 .print "MIN, MAX, and AVERAGE account ages and then the number of accounts at the min weeks."
 SELECT MIN(acct_age_weeks), MAX(acct_age_weeks), AVG(acct_age_weeks) FROM USERS;
 SELECT COUNT(*) FROM users WHERE acct_age_weeks IN (SELECT MIN(acct_age_weeks) FROM users);
+
+.print
+.print "Check the min and max time in milliseconds that user listened to a single track"
+SELECT MIN(ms_played), MAX(ms_played) FROM endsong;
+
+.print
+.print "Check Min and Max of epoch timestamps, this is used to verify that the dates are in the correct range, most likely are, but yah"
+SELECT MIN(end_timestamp), MAX(end_timestamp) FROM endsong;
+

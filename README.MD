@@ -47,22 +47,13 @@ While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent
 		- user_id -- anonymous UUID 
 	2. end_song_sample.csv
 		- ms_played -- the amount of time the user listened to the track, in ms
-		- context -- the UI context the track was played from (e.g. playlist,artist)
+		- context -- the UI context the track was played from (e.g. playlist,artist, album, app, collection, search, unknown )
 		- track_id -- the random UUID for the track
 		- product -- the product status (FREE/PREMIUM)
 		- end_timestamp -- time in EpOCH
-		- user_id -- anonymous UUID of the user_data_sample
+		- user_id -- anonymous UUID of the 
 
-
-	  case "0 - 17" => 1
-      case "18 - 24" => 2
-      case "25 - 29" => 3
-      case "30 - 34" => 4
-      case "35 - 44" => 5
-      case "45 - 54" => 6
-      case "55+" => 7
-      case _ => 0
-
+	
 ### Preliminary list of Questions in my mind (* indicates suggestions from Spotify)
 
 #### Some tasks that I feel that I might need to do:
