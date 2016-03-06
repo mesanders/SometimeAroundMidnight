@@ -2,6 +2,8 @@ package com.sandeme.spotifychallenge.utilities
 
 /**
   * Created by sandeme on 3/5/16.
+  * The idea was taken from a blog a while ago. The idea is to store Vectors. Really these are
+  * Vectors, but the Stats class will use the DblVector and DblMatrix to do some calculations on them.
   */
 object Utility {
   type XY = (Double, Double)

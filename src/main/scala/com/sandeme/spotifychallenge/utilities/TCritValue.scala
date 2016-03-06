@@ -16,6 +16,14 @@ object TCritValue {
   def alpha001 = Array(318.313, 22.327, 10.215, 7.173, 5.893, 5.208, 4.782, 4.499, 4.296, 4.143, 4.024, 3.929, 3.852, 3.787, 3.733, 3.686, 3.646, 3.610, 3.579, 3.552, 3.527, 3.505, 3.485, 3.467, 3.450, 3.435, 3.421, 3.408, 3.396, 3.385, 3.375, 3.365, 3.356, 3.348, 3.340, 3.333, 3.326, 3.319, 3.313, 3.307, 3.301, 3.296, 3.291, 3.286, 3.281, 3.277, 3.273, 3.269, 3.265, 3.261, 3.258, 3.255, 3.251, 3.248, 3.245, 3.242, 3.239, 3.237, 3.234, 3.232, 3.229, 3.227, 3.225, 3.223, 3.220, 3.218, 3.216, 3.214, 3.213, 3.211, 3.209, 3.207, 3.206, 3.204, 3.202, 3.201, 3.199, 3.198, 3.197, 3.195, 3.194, 3.193, 3.191, 3.190, 3.189, 3.188, 3.187, 3.185, 3.184, 3.183, 3.182, 3.181, 3.180, 3.179, 3.178, 3.177, 3.176, 3.175, 3.175, 3.174, 3.090)
 
 
+  /**
+    * Takes in an alpha value that is either .1, .05, .025, .01, .005, or .001 and and does a lookup based on the number
+    * of degrees of freedom. Could have implemented the complicated Math function to calculate the Critical value, but
+    * That would take more time than was available.
+    * @param alpha Value to compute
+    * @param degreesFreedom The number in the sample minus 1.
+    * @return A double of the t-critical value
+    */
   def getTCritValue(alpha:Double, degreesFreedom: Int): Double = {
     if (degreesFreedom < 0 ) { throw new Exception("Error degrees of freedom should be greater than 0") }
 

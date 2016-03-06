@@ -4,6 +4,8 @@ import com.sandeme.spotifychallenge.utilities.Utility.{DblVector, DVector}
 
 /**
   * Created by sandeme on 3/5/16.
+  * Wrapper class to handle a lot of basic statistics on a DVector[T]. Throw in a Vector and the
+  * stats class will compute min, max, sum, sumSqr. sumSqr, will be useful in multiple stats.
   */
 class Stats[T <% Double](private var values: DVector[T]) {
   class _Stats(var minValue: Double, var maxValue: Double, var sum: Double, var sumSqr: Double)
@@ -12,10 +14,10 @@ class Stats[T <% Double](private var values: DVector[T]) {
     val _stats = new _Stats(Double.MaxValue, Double.MinValue, 0.0, 0.0)
 
     values.foreach(x => {
-      if (x < _stats.minValue) x else _stats.minValue
-      if (x > _stats.maxValue) x else _stats.maxValue
-      _stats.sum + x
-      _stats.sumSqr + x*x
+      _stats.minValue = if (x < _stats.minValue) x else _stats.minValue
+      _stats.maxValue = if (x > _stats.maxValue) x else _stats.maxValue
+      _stats.sum += x
+      _stats.sumSqr += x*x
     })
 
     _stats
