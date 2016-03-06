@@ -54,5 +54,9 @@ class Stats[T <% Double](private var values: DVector[T]) {
       INV_SQRT_2PI / stdDev * Math.exp(-0.5 * y * y / stdDev)
     })
   }
+
+  override def toString: String = {
+    s"Min: ${min}\tMax: ${max}\t Mean: ${mean}\t Std_Dev: ${stdDev}\t Size: ${size}"
+  }
 }
 

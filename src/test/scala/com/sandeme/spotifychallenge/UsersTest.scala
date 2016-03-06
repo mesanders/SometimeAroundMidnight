@@ -51,8 +51,7 @@ class UsersTest  extends FunSuite  {
     assert(mappedUsers("c48fc748b2164b23a96eeff365b0bcab").songs.size == 2)
     assert(mappedUsers("61f88d6fd67a448daf5871b97bac0b10").songs.size == 1)
     assert(mappedUsers("47cba57eef554e7fa85442464e2c2512").songs.size == 1)
-    val femaleNumListensVector: DblVector = mappedUsers.filter(_._2.gender == 'f').map(data =>  data._2.songs.size.toDouble).toArray
-    val femaleNumListensStats = new Stats(femaleNumListensVector)
+    val femaleNumListensStats = User.getStatsForTrackCountsByGender('f', mappedUsers)
     assert(femaleNumListensStats.mean == 1.25)
     assert(femaleNumListensStats.size == 4)
   }

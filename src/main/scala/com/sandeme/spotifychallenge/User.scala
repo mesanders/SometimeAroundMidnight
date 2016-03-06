@@ -1,5 +1,8 @@
 package com.sandeme.spotifychallenge
 
+import com.sandeme.spotifychallenge.utilities.Stats
+import com.sandeme.spotifychallenge.utilities.Utility.DblVector
+
 import scala.io.Source
 import scala.collection.mutable.{ArrayBuffer, Map}
 
@@ -60,7 +63,7 @@ object User {
     * @param loadFunction
     * @return
     */
-  def loadFromFile(file: String, loadFunction: (String) => User) : Map[String, User] = {
+  def loadFromFile(file: String, loadFunction: (String) => User = convertCsvUser) : Map[String, User] = {
     val userBuffer =  Map[String, User]()
     val reader = Source.fromFile(file)
     try {
@@ -149,7 +152,11 @@ object User {
     for(record <- records) {
       if (users.contains(record.userId)) users(record.userId).addSongRecord(record)
     }
-
      users.toMap
+  }
+
+  def getStatsForTrackCountsByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
+    val countVector: DblVector = users.filter(_._2.gender == gender).map(_._2.songs.size.toDouble).toArray
+    new Stats(countVector)
   }
 }
