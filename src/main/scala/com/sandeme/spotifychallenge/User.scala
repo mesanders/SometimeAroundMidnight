@@ -11,13 +11,18 @@ import scala.io.Source
   gender,age_range,country,acct_age_weeks,user_id
 
   */
-class User(gender: Char, ageRange: String, country: String, accountAgeWeeks: Int, userId: String) {
+case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: Int, userId: String) {
   def this() {
-    this('u', "unknown", "unkown", -1, "unknown")
+    this('u', 0, "unkown", -1, "unknown")
   }
 
-  class SongRecord(msPlayedTime: Double, context: String, trackId: String, product: String, endTimestamp: Int, userId: String) {
-
+  override def toString: String = {
+    val gen = gender match {
+      case 'f' => "female"
+      case 'm' => "male"
+      case 'u' => "unknown"
+    }
+    s"${gen}," + User.ageRangeToString(ageRange) + s",${country},${accountAgeWeeks},${userId}"
   }
 
 }
@@ -38,17 +43,52 @@ object User {
     } finally {
       reader.close()
     }
-    Array(new User('M', "45-50", "FR", 444, "HELLO"))
+    Array(new User('M', 3, "FR", 444, "HELLO"))
   }
 
-  def convertCsvUser(line: String): User = {
-    val split = line.split(",")
-    val gender: Char = if (line(0).toString.isEmpty) 'u' else line(0).toChar
+  def ageRangeToString(identifier: Int): String = {
+    identifier match {
+      case 0 => ""
+      case 1 => "0 - 17"
+      case 2 => "18 - 24"
+      case 3 => "25 - 29"
+      case 4 => "30 - 34"
+      case 5 => "35 - 44"
+      case 6 => "45 - 54"
+      case 7 => "55"
+    }
+  }
 
-    new User();
+  def ageStringToInt(identifier: String): Int = {
+    identifier match {
+      case "0 - 17" => 1
+      case "18 - 24" => 2
+      case "25 - 29" => 3
+      case "30 - 34" => 4
+      case "35 - 44" => 5
+      case "45 - 54" => 6
+      case "55+" => 7
+      case _ => 0
+    }
+  }
+
+  def convertCsvUser(input: String): User = {
+    val line = input.split(",")
+    val gender: Char = line(0) match {
+      case "female" => 'f'
+      case "male" => 'm'
+      case _ => 'u'
+    }
+    val ageRange = ageStringToInt(line(1))
+    val country = line(2)
+    val acctAgeWeeks = line(3).toInt
+    val userID = line(4)
+
+
+    new User(gender, ageRange, country, acctAgeWeeks, userID );
   }
 
   def loadSongRecords(file: String, users: Array[User]): Array[User] = {
-    Array(new User('M', "45-50", "FR", 444, "HELLO"))
+    Array(new User('M', 0, "FR", 444, "HELLO"))
   }
 }
