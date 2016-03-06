@@ -1,7 +1,7 @@
 package com.sandeme.spotifychallenge
 
 import scala.io.Source
-import scala.collection.mutable.Map
+import scala.collection.mutable.{ArrayBuffer, Map}
 
 /**
   * Created by sandeme on 3/5/16.
@@ -11,20 +11,26 @@ import scala.collection.mutable.Map
   ==> user_data_sample.csv <==
   gender,age_range,country,acct_age_weeks,user_id
 
-  */
-/**
   * Case class to as a holder for User data
   * @param gender Char representation either: f, m, or u (unknown)
   * @param ageRange Bucket of age ranges: 1 -> 0-17, 2-> 18-24, 3 -> 25-29, 4 -> 30-34, 5 -> 34-45, 6 -> 44-55, 7 -> 55+, 0 -> ""
   * @param country Two character representation of country
   * @param accountAgeWeeks Age of the Account in weeks
-  * @param userId
+  * @param userId Anonymized UUID
   */
 case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: Int, userId: String) {
+  val songs: scala.collection.mutable.ArrayBuffer[SongRecord] = new ArrayBuffer[SongRecord]
+
+  /**
+    * Default constructor that creates a blank object.
+    */
   def this() {
     this('u', 0, "unkown", -1, "unknown")
   }
 
+  /**
+    * @return String representation back to the original format.
+    */
   override def toString: String = {
     val gen = gender match {
       case 'f' => "female"
@@ -34,6 +40,11 @@ case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: I
     s"${gen}," + User.ageRangeToString(ageRange) + s",${country},${accountAgeWeeks},${userId}"
   }
 
+  def addSongRecord(song: SongRecord): Unit = {
+    if (song.userId.equals(userId)) {
+      songs += song
+    }
+  }
 }
 
 /**
@@ -83,6 +94,7 @@ object User {
       case 7 => "55+"
       case _ => ""
     }
+
   }
 
   /**
@@ -110,7 +122,7 @@ object User {
     *
     * @param input String in, that is CSV in the following format:
     *              gender, age bucket, country, account age in weeks, Anonymized UUID
-    * @return User object
+    * @return @see com.sandeme.spotifychallenge.User
     */
   def convertCsvUser(input: String): User = {
     val line = input.split(",")
@@ -125,5 +137,19 @@ object User {
     val userID = line(4)
 
     new User(gender, ageRange, country, acctAgeWeeks, userID );
+  }
+
+  /**
+    * Place every Record into the user object.
+    * @param records Array of @see com.sandeme.spotifychallenge.SongRecord
+    * @param users Map of Users where the key is the user ID
+    * @return @see scala.collection.immutable.Map
+    */
+  def addSongRecordsToUsers(records: Array[SongRecord], users: Map[String, User]): scala.collection.immutable.Map[String, User] = {
+    for(record <- records) {
+      if (users.contains(record.userId)) users(record.userId).addSongRecord(record)
+    }
+
+     users.toMap
   }
 }

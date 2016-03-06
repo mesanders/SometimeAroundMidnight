@@ -19,7 +19,6 @@ class Stats[T <% Double](private var values: DVector[T]) {
       _stats.sum += x
       _stats.sumSqr += x*x
     })
-
     _stats
   }
 
@@ -34,7 +33,7 @@ class Stats[T <% Double](private var values: DVector[T]) {
   lazy val stdDev = if(variance < 0) 0 else Math.sqrt(variance)
   lazy val min = stats.minValue
   lazy val max = stats.maxValue
-
+  lazy val size = values.size
   /**
     * Statistics are usually used to normalize data into probability value [0, 1] as required by
     * most classification or clustering algorithms. It is logical to add up the normalization method

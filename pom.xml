@@ -6,7 +6,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <main.class>com.sandeme.spotifychallenge.KickstartMyHeart</main.class>
+        <main.class>com.sandeme.spotifychallenge.SometimeAroundMidnight</main.class>
     </properties>
 
     <name>SandemeSpotifyChallenge</name>
