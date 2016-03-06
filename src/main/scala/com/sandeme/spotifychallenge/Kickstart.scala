@@ -6,7 +6,6 @@ package com.sandeme.spotifychallenge
 object KickstartMyHeart {
   def main(args: Array[String]) = {
     println("Kickstart my heart");
-    User.loadFromFile("/home/sandeme/spotify/data/user_data_sample.csv", println)
     println()
   }
 }

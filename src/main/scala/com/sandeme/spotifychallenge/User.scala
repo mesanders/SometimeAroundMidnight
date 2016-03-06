@@ -1,6 +1,7 @@
 package com.sandeme.spotifychallenge
 
 import scala.io.Source
+import scala.collection.mutable.Map
 
 /**
   * Created by sandeme on 3/5/16.
@@ -10,6 +11,14 @@ import scala.io.Source
   ==> user_data_sample.csv <==
   gender,age_range,country,acct_age_weeks,user_id
 
+  */
+/**
+  * Case class to as a holder for User data
+  * @param gender Char representation either: f, m, or u (unknown)
+  * @param ageRange Bucket of age ranges: 1 -> 0-17, 2-> 18-24, 3 -> 25-29, 4 -> 30-34, 5 -> 34-45, 6 -> 44-55, 7 -> 55+, 0 -> ""
+  * @param country Two character representation of country
+  * @param accountAgeWeeks Age of the Account in weeks
+  * @param userId
   */
 case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: Int, userId: String) {
   def this() {
@@ -28,24 +37,40 @@ case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: I
 }
 
 /**
-  * Companion Object that can load users from file. and then load their SongRecords, we need to identify a
-  * Way to sessionize data
+  * Companion Object for User that includes "static" methods that can be used without instantiating the class.
+  * This includes loading a file and transforming various parts of the data
   */
 object User {
-  def loadFromFile(file: String, loadFunction: (String) => Unit) : Array[User] = {
+  /**
+    * Takes in a file and a function to parse the user.
+    * Why a function, well I wasn't sure if there was going to be another function I wanted to use later.
+    *
+    * @param file Location of the file to read in line by line
+    * @param loadFunction
+    * @return
+    */
+  def loadFromFile(file: String, loadFunction: (String) => User) : Map[String, User] = {
+    val userBuffer =  Map[String, User]()
     val reader = Source.fromFile(file)
     try {
       for (line <- reader.getLines()) {
-        loadFunction(line)
+          val user = loadFunction(line)
+          userBuffer += (user.userId -> user)
       }
     } catch {
       case ex: Exception => { ex.printStackTrace() }
     } finally {
       reader.close()
     }
-    Array(new User('M', 3, "FR", 444, "HELLO"))
+    userBuffer
   }
 
+  /**
+    * This function will convert Age Range into an identifier... There is definitely a better way to do this
+    * however, naming variables for enums caused me to turn down the path of least resistant
+    * @param identifier : Integer representation of Age Bucket
+    * @return String representation as stored from the original file
+    */
   def ageRangeToString(identifier: Int): String = {
     identifier match {
       case 0 => ""
@@ -55,10 +80,17 @@ object User {
       case 4 => "30 - 34"
       case 5 => "35 - 44"
       case 6 => "45 - 54"
-      case 7 => "55"
+      case 7 => "55+"
+      case _ => ""
     }
   }
 
+  /**
+    * As above This function will convert Age Range into an identifier... There is definitely a better way to do this
+    * however, naming variables for enums caused me to turn down the path of least resistant
+    * @param identifier: String representation of age bucket
+    * @return Integer encode for the Age, probably should be  a short
+    */
   def ageStringToInt(identifier: String): Int = {
     identifier match {
       case "0 - 17" => 1
@@ -72,6 +104,14 @@ object User {
     }
   }
 
+  /**
+    * Takes in a CSV representation of what a User Object looks like. This format is based on
+    * the format in the user_data_sample.csv provided.
+    *
+    * @param input String in, that is CSV in the following format:
+    *              gender, age bucket, country, account age in weeks, Anonymized UUID
+    * @return User object
+    */
   def convertCsvUser(input: String): User = {
     val line = input.split(",")
     val gender: Char = line(0) match {
@@ -84,11 +124,6 @@ object User {
     val acctAgeWeeks = line(3).toInt
     val userID = line(4)
 
-
     new User(gender, ageRange, country, acctAgeWeeks, userID );
-  }
-
-  def loadSongRecords(file: String, users: Array[User]): Array[User] = {
-    Array(new User('M', 0, "FR", 444, "HELLO"))
   }
 }

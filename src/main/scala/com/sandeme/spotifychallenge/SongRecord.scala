@@ -9,5 +9,7 @@ case class SongRecord(msPlayedTime: Double, context: String, trackId: String, pr
 }
 
 object SongRecord {
-  
+  def loadSongRecords(file: String): Array[User] = {
+    Array(new User('M', 0, "FR", 444, "HELLO"))
+  }
 }

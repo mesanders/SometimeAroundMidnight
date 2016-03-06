@@ -11,6 +11,18 @@
 SELECT COUNT(*) FROM users;
 
 .print
+.print "Number of users that are female: " 
+SELECT COUNT(*) FROM users WHERE gender = 'female';
+
+.print
+.print "Number of users that are male: "
+SELECT COUNT(*) FROM users WHERE gender = 'male';
+
+.print
+.print "Number of unknown users"
+SELECT COUNT(*) FROM users WHERE gender NOT IN ('male', 'female');
+
+.print
 .print "Number of Song Samples in endsong table."
 SELECT COUNT(*) FROM endsong;
 
@@ -53,3 +65,8 @@ SELECT COUNT(*) NUM_USERS FROM users WHERE country != 'US';
 .print
 .print "Total Number of Users in the US: " 
 SELECT COUNT(*) AS NUM_USERS FROM users WHERE country = 'US';
+
+.print 
+.print "MIN, MAX, and AVERAGE account ages and then the number of accounts at the min weeks."
+SELECT MIN(acct_age_weeks), MAX(acct_age_weeks), AVG(acct_age_weeks) FROM USERS;
+SELECT COUNT(*) FROM users WHERE acct_age_weeks IN (SELECT MIN(acct_age_weeks) FROM users);

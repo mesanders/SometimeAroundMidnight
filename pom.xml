@@ -54,7 +54,7 @@
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <filereports>WDF TestSuite.txt</filereports>
-                    <membersOnlySuites>com.sandeme.spotifychallenge.utilities</membersOnlySuites>
+                    <membersOnlySuites>com.sandeme.spotifychallenge.utilities,com.sandeme.spotifychallenge</membersOnlySuites>
                 </configuration>
                 <executions>
                     <execution>
