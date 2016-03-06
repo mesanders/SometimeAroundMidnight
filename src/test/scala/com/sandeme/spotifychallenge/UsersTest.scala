@@ -11,8 +11,10 @@ class UsersTest  extends FunSuite  {
   test("Convert Age Bucket to Int and back") {
     assert(User.ageStringToInt("18 - 24") == 2)
     assert(User.ageStringToInt("55+") == 7)
-    assert(User.ageRangeToString(6) == "45 - 55")
-    assert(User.ageRangeToString(-1) == "")
+    assert(User.ageRangeToString(6).equals("45 - 54"))
+    assert(User.ageRangeToString(-1).equals(""))
+    assert(User.ageRangeToString(1).equals("0 - 17"))
+    assert(User.ageStringToInt("25 - 29") == 3)
     assert(User.ageStringToInt("HELLO Mike, I see you there, looking at me") == 0)
   }
 
