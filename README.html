@@ -1016,7 +1016,8 @@ body .markdown-body
 }
 </style><title>README</title></head><body><article class="markdown-body"><h1 id="mike-sanders-spotify-data-engineering-machine-learning-take-home-challenge"><a name="user-content-mike-sanders-spotify-data-engineering-machine-learning-take-home-challenge" href="#mike-sanders-spotify-data-engineering-machine-learning-take-home-challenge" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Mike Sanders - Spotify Data Engineering &amp; Machine Learning Take-home Challenge</h1>
 <blockquote>
-<p>Usage: Shell script ./setup.sh will download dataset from link below. It will check for any things like duplicate rows. It will output to the console the steps that it is taking.</p>
+<p>Usage: Shell script <code>./setup.sh</code> will download dataset from link below. It will check for any things like duplicate rows. It will output to the console the steps that it is taking.</p>
+<p>Usage: Shell script <code>./setup.sh run</code>  will package the scala solution and run it with 1G Memory. </p>
 </blockquote>
 <h2 id="my-approach-to-the-overall-task"><a name="user-content-my-approach-to-the-overall-task" href="#my-approach-to-the-overall-task" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>My approach to the overall task.</h2>
 <p>First things first. Hi. Thank you. I&rsquo;m excited to be here. Blork. Wait, that doesn&rsquo;t mean anything, sorry, I&rsquo;m too excited.</p>
@@ -1057,11 +1058,11 @@ Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. <br />
     - user_id -- anonymous UUID 
 2. end_song_sample.csv
     - ms_played -- the amount of time the user listened to the track, in ms
-    - context -- the UI context the track was played from (e.g. playlist,artist)
+    - context -- the UI context the track was played from (e.g. playlist,artist, album, app, collection, search, unknown )
     - track_id -- the random UUID for the track
     - product -- the product status (FREE/PREMIUM)
     - end_timestamp -- time in EpOCH
-    - user_id -- anonymous UUID of the user_data_sample
+    - user_id -- anonymous UUID of the
 </code></pre>
 <h3 id="preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify"><a name="user-content-preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify" href="#preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Preliminary list of Questions in my mind (* indicates suggestions from Spotify)</h3>
 <h4 id="some-tasks-that-i-feel-that-i-might-need-to-do"><a name="user-content-some-tasks-that-i-feel-that-i-might-need-to-do" href="#some-tasks-that-i-feel-that-i-might-need-to-do" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Some tasks that I feel that I might need to do:</h4>
@@ -1097,4 +1098,5 @@ Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. <br />
 <li>Identify Tracks that are commonly listened to by users. This is going to require some in depth coding, ( Possible examples to build fromare     algorithms used for recommendation engines), create weights so that we can identify songs that are commonly listened together. See if users who     listen to x song haven’t listened to y song, and use that as a user suggestion. Possibly suggest playlists that other userswho are similar to   them (based on gender and/or location).</li>
 <li>Logistic Regression possibility, we can create a model to see if a user is likely to listen to a song, this would include demographic data  such as where the user lives.</li>
 <li>For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do this    for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be  terminated because they were done with the session  </li>
-</ol></article></body></html>
+</ol>
+<p>.49492 * x = \</p></article></body></html>

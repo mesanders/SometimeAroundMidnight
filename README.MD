@@ -1,7 +1,8 @@
 # Mike Sanders - Spotify Data Engineering & Machine Learning Take-home Challenge
 
->Usage: Shell script ./setup.sh will download dataset from link below. It will check for any things like duplicate rows. It will output to the console the steps that it is taking.
+>Usage: Shell script `./setup.sh` will download dataset from link below. It will check for any things like duplicate rows. It will output to the console the steps that it is taking.
 
+>Usage: Shell script `./setup.sh run`  will package the scala solution and run it with 1G Memory. 
 ## My approach to the overall task.
 
 First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
@@ -87,3 +88,5 @@ While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent
 17. Identify Tracks that are commonly listened to by users. This is going to require some in depth coding, ( Possible examples to build fromare 	algorithms used for recommendation engines), create weights so that we can identify songs that are commonly listened together. See if users who 	listen to x song haven’t listened to y song, and use that as a user suggestion. Possibly suggest playlists that other userswho are similar to 	them (based on gender and/or location).
 18. Logistic Regression possibility, we can create a model to see if a user is likely to listen to a song, this would include demographic data 	such as where the user lives.
 19. For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do this 	for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be 	terminated because they were done with the session	
+
+.49492 * x = \

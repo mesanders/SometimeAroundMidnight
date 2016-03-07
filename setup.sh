@@ -4,6 +4,25 @@ function log {
 	echo "$(date "+%D %T") INFO: $1"  
 }
 
+function run_scala_package() {
+	mvn --version >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		log "Compiling package"
+		mvn package
+		log "Running main class:"
+		JAVA_OPTS="-Xmx1G" scala target/spotifychallenge-1.0-SNAPSHOT.jar 
+	fi
+}
+
+case $1 in 
+	run)
+		run_scala_package
+		exit 0
+		;;
+	*)
+		;;
+esac
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DATADIR=${DIR}/data
 HEADERDIR=${DATADIR}/withheader
@@ -49,8 +68,4 @@ if [ $? -eq 0 ]; then
 	sqlite3 < lite_analysis.sql
 fi
 
-mvn --version >/dev/null 2>&1
-if [ $? -eq 0 ]; then
-	log "Testing scala code: "
-	mvn test 
-fi
+run_scala_package()
