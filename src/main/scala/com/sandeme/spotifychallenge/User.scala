@@ -4,7 +4,7 @@ import com.sandeme.spotifychallenge.utilities.Stats
 import com.sandeme.spotifychallenge.utilities.Utility.DblVector
 
 import scala.io.Source
-import scala.collection.mutable.{ArrayBuffer, Map}
+import scala.collection.mutable.{ArrayBuffer}
 
 /**
   * Created by sandeme on 3/5/16.
@@ -64,7 +64,7 @@ object User {
     * @return
     */
   def loadFromFile(file: String, loadFunction: (String) => User = convertCsvUser) : Map[String, User] = {
-    val userBuffer =  Map[String, User]()
+    val userBuffer =  scala.collection.mutable.Map[String, User]()
     val reader = Source.fromFile(file)
     try {
       for (line <- reader.getLines()) {
@@ -76,7 +76,7 @@ object User {
     } finally {
       reader.close()
     }
-    userBuffer
+    userBuffer.toMap
   }
 
   /**
@@ -148,7 +148,7 @@ object User {
     * @param users Map of Users where the key is the user ID
     * @return @see scala.collection.immutable.Map
     */
-  def addSongRecordsToUsers(records: Array[SongRecord], users: Map[String, User]): scala.collection.immutable.Map[String, User] = {
+  def addSongRecordsToUsers(records: Array[SongRecord], users: scala.collection.immutable.Map[String, User]): scala.collection.immutable.Map[String, User] = {
     for(record <- records) {
       if (users.contains(record.userId)) users(record.userId).addSongRecord(record)
     }
@@ -158,5 +158,17 @@ object User {
   def getStatsForTrackCountsByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
     val countVector: DblVector = users.filter(_._2.gender == gender).map(_._2.songs.size.toDouble).toArray
     new Stats(countVector)
+  }
+
+  def getStatsForAvgListenByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
+    val avgListenVector: DblVector = users.filter(_._2.gender == gender)
+      .map{userD => val songs = userD._2.songs; songs.map(_.msPlayedTime).sum.toDouble / songs.size}.toArray
+    new Stats(avgListenVector)
+  }
+
+  def getAvgListenStatsTuple(users: Map[String, User]): (Stats[Double], Stats[Double]) = {
+    val statsByUS: DblVector = users.filter(_._2.country.equals("US")).map(_._2.songs.size.toDouble).toArray
+    val statsByNonUS: DblVector = users.filter(!_._2.country.equals("US")).map(_._2.songs.size.toDouble).toArray
+    (new Stats(statsByUS), new Stats(statsByNonUS))
   }
 }

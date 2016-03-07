@@ -29,4 +29,22 @@ object Utility {
     m
   }
 
+  /**
+    * @see <a link="https://en.wikipedia.org/wiki/Correlation_and_dependence"Correlation and Dependence</a>
+    *      Lightweight implementation to view coorelation. Of Course another place is just to use the Apache commons again,
+    *      hosever going over this helps understnad it better.
+    * @param vector1
+    * @param vector2
+    * @return
+    */
+  def correlation(vector1: DblVector, vector2: DblVector): Double = {
+    if (vector1.size != vector1.size) throw new Exception("ERROR Tried to compare two Vectors of different sizes")
+    val stats1 = new Stats(vector1)
+    val stats2 = new Stats(vector2)
+    var residualProduct = 0.0
+    for (i <- 0 to vector1.size - 1) {
+      residualProduct += (vector1(i) - stats1.mean) * (vector2(i) - stats2.mean)
+    }
+    residualProduct / Math.sqrt(stats1.sumDeviationSquared * stats2.sumDeviationSquared)
+  }
 }

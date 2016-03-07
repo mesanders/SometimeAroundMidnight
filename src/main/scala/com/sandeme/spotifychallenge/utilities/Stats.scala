@@ -34,8 +34,12 @@ class Stats[T <% Double](private var values: DVector[T]) {
   lazy val min = stats.minValue
   lazy val max = stats.maxValue
   lazy val size = values.size
+  lazy val sum = stats.sum
   lazy val inverseSize: Double = 1.0 / (size - 1)
   lazy val varOverSampleSize:Double = variance / size
+  lazy val sumSqr = stats.sumSqr
+  lazy val sumDeviationSquared = values.map(x => Math.pow(x - mean, 2)).sum
+  lazy val sumOfDeviation = values.map(x => x - mean).sum
 
 
   /**
@@ -60,7 +64,7 @@ class Stats[T <% Double](private var values: DVector[T]) {
   }
 
   override def toString: String = {
-    s"Min: ${min}\tMax: ${max}\t Mean: ${mean}\t Std_Dev: ${stdDev}\t Size: ${size}"
+    s"Min: ${min}\tMax: ${max}\t Mean: ${mean}\t Std_Dev: ${stdDev}\t Size: ${size}\tSum: ${sum}\t SumSqr: ${sumSqr}\tVariance: ${variance}"
   }
 }
 

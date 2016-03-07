@@ -24,7 +24,7 @@ object SometimeAroundMidnight {
     }
 
     val songUsersTuple = loadSongAndUserFiles(userFile, songFile)
-    genderStatistics(songUsersTuple._2)
+    statsByDemographics(songUsersTuple._2)
   }
 
   def loadSongAndUserFiles(userFile: String, songFile: String): (Array[SongRecord], Map[String, User]) = {
@@ -36,7 +36,7 @@ object SometimeAroundMidnight {
     (songs, users)
   }
 
-  def genderStatistics(users: Map[String, User]): Unit = {
+  def statsByDemographics(users: Map[String, User]): Unit = {
     // Might want o
     val femaleStats =  User.getStatsForTrackCountsByGender('f', users)
     val maleStats = User.getStatsForTrackCountsByGender('m', users)
@@ -46,9 +46,27 @@ object SometimeAroundMidnight {
     println(s"Female Listening Stats:\t${femaleStats}")
     println(s"Male Listening Stats:\t${maleStats}\n")
     println(StudentTTest.studentTwoTailedTTest(maleStats, femaleStats, .05).message)
+
+    println("\nAnd the walls spin and you're paper-thin from the haze of the smoke and the mescaline\n")
+    val femaleStatsAvgTime = User.getStatsForAvgListenByGender('f', users)
+    val maleStatsAvgTime = User.getStatsForAvgListenByGender('m', users)
+
+    println("Comparing the difference between male and female listeners based on the average amount of time that they listen to tracks. X1 = male mean average time listening, and X2 = female mean average Time listening")
+    println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
+    println(s"Female Listening Stats:\t${femaleStatsAvgTime}")
+    println(s"Male Listening Stats:\t${maleStatsAvgTime}\n")
+    println(StudentTTest.studentTwoTailedTTest(maleStatsAvgTime, femaleStatsAvgTime, .05).message)
+
+    println("\nBut ya make everything alright, when ya hold and you sqeeze me tight.")
+    val statsByCountryGroupTuple = User.getAvgListenStatsTuple(users)
+    println("\n\nComparing the difference between US listeners and non US listeners based on the average Amount of tracks they listen to\n" +
+      "during exploratory analysis US made up roughly 1/3rd of Users. X1 = US mean number of tracks, and X2 = Non US mean number of tracks")
+    println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
+    println(s"US Listening Stats:\t${statsByCountryGroupTuple._1}")
+    println(s"Non-US Listening Stats:\t${statsByCountryGroupTuple._2}\n")
+    val testResults = StudentTTest.studentTwoTailedTTest(statsByCountryGroupTuple._1, statsByCountryGroupTuple._2, .05)
+    println(testResults.message)
   }
-
-
 
   /**
     * Very lightweight command line parser, assumes key value pair separated by =
