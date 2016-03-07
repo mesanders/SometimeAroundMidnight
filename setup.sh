@@ -10,7 +10,7 @@ function run_scala_package() {
 		log "Compiling package"
 		mvn package
 		log "Running main class:"
-		JAVA_OPTS="-Xmx1G" scala target/spotifychallenge-1.0-SNAPSHOT.jar 
+		JAVA_OPTS="-Xmx700M" scala target/spotifychallenge-1.0-SNAPSHOT.jar 
 	fi
 }
 
