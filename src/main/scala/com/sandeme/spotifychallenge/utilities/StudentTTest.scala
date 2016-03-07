@@ -20,6 +20,25 @@ object StudentTTest {
   def alpha005 = Array(63.657, 9.925, 5.841, 4.604, 4.032, 3.707, 3.499, 3.355, 3.250, 3.169, 3.106, 3.055, 3.012, 2.977, 2.947, 2.921, 2.898, 2.878, 2.861, 2.845, 2.831, 2.819, 2.807, 2.797, 2.787, 2.779, 2.771, 2.763, 2.756, 2.750, 2.744, 2.738, 2.733, 2.728, 2.724, 2.719, 2.715, 2.712, 2.708, 2.704, 2.701, 2.698, 2.695, 2.692, 2.690, 2.687, 2.685, 2.682, 2.680, 2.678, 2.676, 2.674, 2.672, 2.670, 2.668, 2.667, 2.665, 2.663, 2.662, 2.660, 2.659, 2.657, 2.656, 2.655, 2.654, 2.652, 2.651, 2.650, 2.649, 2.648, 2.647, 2.646, 2.645, 2.644, 2.643, 2.642, 2.641, 2.640, 2.640, 2.639, 2.638, 2.637, 2.636, 2.636, 2.635, 2.634, 2.634, 2.633, 2.632, 2.632, 2.631, 2.630, 2.630, 2.629, 2.629, 2.628, 2.627, 2.627, 2.626, 2.626, 2.576)
   def alpha001 = Array(318.313, 22.327, 10.215, 7.173, 5.893, 5.208, 4.782, 4.499, 4.296, 4.143, 4.024, 3.929, 3.852, 3.787, 3.733, 3.686, 3.646, 3.610, 3.579, 3.552, 3.527, 3.505, 3.485, 3.467, 3.450, 3.435, 3.421, 3.408, 3.396, 3.385, 3.375, 3.365, 3.356, 3.348, 3.340, 3.333, 3.326, 3.319, 3.313, 3.307, 3.301, 3.296, 3.291, 3.286, 3.281, 3.277, 3.273, 3.269, 3.265, 3.261, 3.258, 3.255, 3.251, 3.248, 3.245, 3.242, 3.239, 3.237, 3.234, 3.232, 3.229, 3.227, 3.225, 3.223, 3.220, 3.218, 3.216, 3.214, 3.213, 3.211, 3.209, 3.207, 3.206, 3.204, 3.202, 3.201, 3.199, 3.198, 3.197, 3.195, 3.194, 3.193, 3.191, 3.190, 3.189, 3.188, 3.187, 3.185, 3.184, 3.183, 3.182, 3.181, 3.180, 3.179, 3.178, 3.177, 3.176, 3.175, 3.175, 3.174, 3.090)
 
+  def getTForPearson(rValue: Double, sampleSize: Int):  Double =  {
+    rValue / Math.sqrt((1 - Math.pow(rValue, 2)) / (sampleSize - 2))
+  }
+
+  def tTestForPearsonCorrelation(rValue: Double, sampleSize: Int, alpha: Double = 0.050 / 2): TTestResult = {
+    val tValue = getTForPearson(rValue, sampleSize)
+    val critValue = getTCritValue(alpha, sampleSize - 2)
+    val rSquared = Math.pow(rValue, 2)
+    val reject = if (tValue >= critValue || tValue <= (-1 * critValue)) true else false
+    var message = if (reject) "Reject the null hypothesis. There is a statistically significant correlation between the two variables."
+    else "Do not Reject the null Hypothesis that there is not a statistically significant correlation between two variables"
+      message = message + s". t value: ${tValue}\tT Crit Value: ${critValue} and " + (critValue * -1)
+    if (rValue >= 0.0 && rValue >= 0.5) message = message + "\n There is a strong correlation between the two variables. When one increases the other increases."
+    else if (rValue >= 0.0) message = message + "\nThere is a weak correlation between the two variables. When one increases the other increases."
+    else if (rValue <= 0.0 && rValue <= -0.5) message = message + "\nThere is a weak negative correlation between the two variables. When one increases the other decreases"
+    else {message = message + s"There is a Strong Negative correlation. When one increases the other decreases."}
+    message = message + s"\nr: ${rValue} \t r\u00B2: ${rSquared}."
+    return new TTestResult(message, tValue, (critValue, -1 * critValue), reject)
+  }
 
   /**
     * Takes in an alpha value that is either .1, .05, .025, .01, .005, or .001 and and does a lookup based on the number
@@ -72,6 +91,13 @@ object StudentTTest {
     return new TTestResult(message, tValue, (critValue, -1 * critValue), reject)
   }
 
+  /**
+    * Calculates the degrees of freedom for two means of independent samples. Need to do some fancy Math instead
+    * of just taking the average like I originally though.
+    * @param stats1
+    * @param stats2
+    * @return
+    */
   def getDegreesFreedom(stats1: Stats[Double], stats2: Stats[Double]): Int = {
     val num = Math.pow(stats1.varOverSampleSize + stats2.varOverSampleSize ,2)
     val demLeft = stats1.inverseSize * Math.pow(stats1.varOverSampleSize,2)

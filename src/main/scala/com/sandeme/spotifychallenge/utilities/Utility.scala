@@ -47,4 +47,8 @@ object Utility {
     }
     residualProduct / Math.sqrt(stats1.sumDeviationSquared * stats2.sumDeviationSquared)
   }
+
+  def coefficientDetermination(vector1: DblVector, vector2: DblVector): Double = {
+    Math.pow(correlation(vector1, vector2), 2)
+  }
 }

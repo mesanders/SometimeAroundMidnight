@@ -24,7 +24,11 @@ class UtilityTest extends FunSuite {
   }
 
   test("See if two vectors are correlated: verified the results on http://www.socscistatistics.com/tests/pearson/Default2.aspx" ) {
-    assert(Utility.correlation(vector, vector2).abs - 0.474072 > 0)
-    assert(Utility.correlation(vector, vector3).abs - 0.6509371712829453 > 0)
+    val rValueVectorVector3 = Utility.correlation(vector, vector3)
+    assert(Utility.correlation(vector, vector2).abs - 0.474072 >= 0)
+    assert(rValueVectorVector3.abs - 0.6509371712829453 >= 0.0)
+    assert(Utility.coefficientDetermination(vector, vector3).abs - 0.42 >= 0.0)
+    assert(StudentTTest.getTForPearson(rValueVectorVector3, vector.size).abs - 2.425 >= 0.0)
+    println(StudentTTest.tTestForPearsonCorrelation(rValueVectorVector3, vector.size, 0.050).message)
   }
 }
