@@ -3,7 +3,7 @@ package com.sandeme.spotifychallenge
 import java.io.File
 import java.util.logging.Logger
 
-import com.sandeme.spotifychallenge.utilities.TCritValue
+import com.sandeme.spotifychallenge.utilities.StudentTTest
 
 /**
   * Created by sandeme on 3/5/16.
@@ -45,7 +45,7 @@ object SometimeAroundMidnight {
     println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
     println(s"Female Listening Stats:\t${femaleStats}")
     println(s"Male Listening Stats:\t${maleStats}\n")
-    println(TCritValue.studentTwoTailedTTest(maleStats, femaleStats, .05).message)
+    println(StudentTTest.studentTwoTailedTTest(maleStats, femaleStats, .05).message)
   }
 
 

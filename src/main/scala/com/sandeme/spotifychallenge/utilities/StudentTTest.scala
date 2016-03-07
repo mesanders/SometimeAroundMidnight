@@ -6,7 +6,7 @@ package com.sandeme.spotifychallenge.utilities
   *     Ther table above is an example of where the results came from. Could have tried to implement the formula above; however,
   *     Time constraints and all, also my brain would be mush afterwards. This is a straightforward implementation
   */
-object TCritValue {
+object StudentTTest {
 
   /**
     * The following Arrays are used to store the T Critical value based on the various degrees of freedom
