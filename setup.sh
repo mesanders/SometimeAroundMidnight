@@ -14,10 +14,18 @@ function run_scala_package() {
 	fi
 }
 
+function run_sqlite3() {	
+	sqlite3 < lite_analysis.sql
+	exit 0
+}
+
 case $1 in 
 	run)
 		run_scala_package
 		exit 0
+		;;
+	runsql)	
+		run_sqlite3
 		;;
 	*)
 		;;

@@ -2,7 +2,9 @@
 
 >Usage: Shell script `./setup.sh` will download dataset from link below. It will check for any things like duplicate rows. It will output to the console the steps that it is taking.
 
->Usage: Shell script `./setup.sh run`  will package the scala solution and run it with 1G Memory. 
+>Usage: Shell script `./setup.sh run`  will package the scala solution and run it with 1G Memory.
+
+>Usage: Shell script `./setup runsql` will run sqlite3 on the lite_analysis.sql file, which has multiple exploratory queries. 
 ## My approach to the overall task.
 
 First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
