@@ -34,6 +34,10 @@ class Stats[T <% Double](private var values: DVector[T]) {
   lazy val min = stats.minValue
   lazy val max = stats.maxValue
   lazy val size = values.size
+  lazy val inverseSize: Double = 1.0 / (size - 1)
+  lazy val varOverSampleSize:Double = variance / size
+
+
   /**
     * Statistics are usually used to normalize data into probability value [0, 1] as required by
     * most classification or clustering algorithms. It is logical to add up the normalization method

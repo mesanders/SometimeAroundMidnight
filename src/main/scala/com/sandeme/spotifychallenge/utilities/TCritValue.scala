@@ -59,7 +59,7 @@ object TCritValue {
     * @return TTestResult, a case class with the result from the test
     */
   def studentTwoTailedTTest(stats1: Stats[Double], stats2: Stats[Double], alpha: Double): TTestResult = {
-    if (alpha < .001 || alpha > .10) throw new Exception("Exception thrown, the alpha value was either too low or too high: Between .001 and .1")
+    if (alpha < .025   || alpha > .10) throw new Exception("Exception thrown, the alpha value was either too low or too high: Between .001 and .1")
     val meanDifferences = stats1.mean - stats2.mean
     val pooledVariance = Math.sqrt((stats1.variance / stats1.size) + (stats2.variance / stats2.size))
     val tValue = meanDifferences / pooledVariance
@@ -73,13 +73,9 @@ object TCritValue {
   }
 
   def getDegreesFreedom(stats1: Stats[Double], stats2: Stats[Double]): Int = {
-    val stats1VarOverN = stats1.variance / stats1.size
-    val stats2VarOverN = stats2.variance / stats2.size
-    val inverseSize1 = 1.0 / (stats1.size - 1)
-    val inverseSize2  = 1.0 / (stats2.size - 1)
-    val num = Math.pow(stats1VarOverN + stats2VarOverN ,2)
-    val demLeft = inverseSize1 * Math.pow(stats1VarOverN,2)
-    val demRight = inverseSize2 * Math.pow(stats2VarOverN,2)
+    val num = Math.pow(stats1.varOverSampleSize + stats2.varOverSampleSize ,2)
+    val demLeft = stats1.inverseSize * Math.pow(stats1.varOverSampleSize,2)
+    val demRight = stats2.inverseSize * Math.pow(stats2.varOverSampleSize ,2)
     val den = demLeft + demRight
     (num / den).toInt
   }
