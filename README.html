@@ -1023,11 +1023,31 @@ body .markdown-body
 <h2 id="my-approach-to-the-overall-task"><a name="user-content-my-approach-to-the-overall-task" href="#my-approach-to-the-overall-task" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>My approach to the overall task.</h2>
 <p>First things first. Hi. Thank you. I&rsquo;m excited to be here. Blork. Wait, that doesn&rsquo;t mean anything, sorry, I&rsquo;m too excited.</p>
 <ul>
-<li>First thing I did was read through the instructions 3x.</li>
-<li>Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture key points or thoughts. Even if I didn&rsquo;t have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.</li>
-<li>Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  </li>
-<li>First thing, set up a script that will automatically download the data, do some quick removal of any full row duplicates.</li>
-<li>Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. </li>
+<li>
+<p>First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn&rsquo;t want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. </p>
+</li>
+<li>
+<p>Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn&rsquo;t have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.</p>
+</li>
+<li>
+<p>Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  </p>
+</li>
+<li>
+<p>Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)</p>
+</li>
+<li>
+<p>Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).</p>
+</li>
+<li>
+<p>Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  </p>
+</li>
+<li>
+<p>Scala: <br />
+1. Create two classes with companion objects that will load the two major data structures based on the file format. <br />
+2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. <br />
+3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.<br />
+4) Create a launcher program that will run specific analysis</p>
+</li>
 </ul>
 <h2 id="some-other-information-i-decided-to-unstrategically-put-right-here"><a name="user-content-some-other-information-i-decided-to-unstrategically-put-right-here" href="#some-other-information-i-decided-to-unstrategically-put-right-here" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Some other information I decided to unstrategically put right here.</h2>
 <p><strong>System Specs</strong><br />

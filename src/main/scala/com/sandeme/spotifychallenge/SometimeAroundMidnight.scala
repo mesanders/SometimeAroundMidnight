@@ -36,6 +36,12 @@ object SometimeAroundMidnight {
     (songs, users)
   }
 
+  def pearsonCorrelationUserData(records: (Array[SongRecord], Map[String, User])): Unit = {
+    val sumTrackListens = records._2.map(_._2.songs.size)
+    val avgTrackListens = records._2.map(in => in._2.songs.map(_.msPlayedTime).sum.toDouble / in._2.songs.size)
+    val distinctCountries = records._2.map(_._2.toString)
+  }
+
   def statsByDemographics(users: Map[String, User]): Unit = {
     // Might want o
     val femaleStats =  User.getStatsForTrackCountsByGender('f', users)

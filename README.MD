@@ -9,11 +9,23 @@
 
 First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
 
-- First thing I did was read through the instructions 3x.
-- Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture key points or thoughts. Even if I didn't have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.
+- First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn't want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. 
+
+- Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn't have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.
+
 - Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  
-- First thing, set up a script that will automatically download the data, do some quick removal of any full row duplicates.
-- Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. 
+
+- Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)
+
+- Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).
+
+- Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  
+
+- Scala: 
+1. Create two classes with companion objects that will load the two major data structures based on the file format. 
+2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
+3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  
+4) Create a launcher program that will run specific analysis
 
 
 ## Some other information I decided to unstrategically put right here.
