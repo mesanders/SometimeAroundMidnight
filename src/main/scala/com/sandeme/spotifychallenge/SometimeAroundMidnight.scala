@@ -25,12 +25,37 @@ object SometimeAroundMidnight {
     }
 
     val songUsersTuple = loadSongAndUserFiles(userFile, songFile)
+
+
     // Does some tests against demographic data.
     statsByDemographics(songUsersTuple._2)
     // Lists some preliminary stats on Vectors of user data nad then a correlation table
     pearsonCorrelationUserData(songUsersTuple._1, songUsersTuple._2.map(_._2).toArray)
     // Stats by product Type
     statsByProductType(songUsersTuple._2)
+    // Users who changed status from or to premium during the session
+    statsByUsersProductChange(songUsersTuple._2)
+  }
+
+  def statsByUsersProductChange(users: Map[String, User]): Unit = {
+
+    val usersWhoChanged = users.filter(_._2.songs.map(_.product).distinct.size > 1)
+    val newPremium = usersWhoChanged.filter{user => val songs = user._2.songs.sortBy(_.endTimestamp);
+      songs.last.product.equals("premium")
+    }
+    val quitPremium = usersWhoChanged.filter{user => val songs = user._2.songs.sortBy(_.endTimestamp);
+      !songs.last.product.equals("premium")
+    }
+
+    println(f"\n\nChanged and Premium at the end of the session %%${(newPremium.size.toDouble / usersWhoChanged.size) * 100}%.4f")
+    println(f"Changed and Not premium at the end of the session %%${(quitPremium.size.toDouble / usersWhoChanged.size) * 100}%.4f")
+
+    /* The following are commented out because there was nothing of statistical significance between the users who changed
+    println("\n\nDemographics for new Users")
+    statsByDemographics(newPremium)
+    println("\n\nDemographic stats for users who left premium")
+    statsByDemographics(quitPremium)
+    */
   }
 
   /**
@@ -48,6 +73,10 @@ object SometimeAroundMidnight {
     (songs, users)
   }
 
+  /**
+    * Work horse method to run pearson correlation on userdata, and then make it pretty. Creates a Matrix and then runs over each piece.
+    * @param records
+    */
   def pearsonCorrelationUserData(records: (Array[SongRecord], Array[User])): Unit = {
     // These two variables will be used to map Countries to a categorical Number.
     val countries = records._2.map(_.country).distinct
@@ -84,11 +113,17 @@ object SometimeAroundMidnight {
     }
   }
 
+  /**
+    * Mostly printlns outputing various stats by demographics, using a lot of the methods that were created to support this stuff.
+    * @param users
+    */
   def statsByDemographics(users: Map[String, User]): Unit = {
     // Might want o
     val femaleStats =  User.getStatsForTrackCountsByGender('f', users)
     val maleStats = User.getStatsForTrackCountsByGender('m', users)
-
+    val percentageFemale = (femaleStats.size.toDouble / users.size) * 100
+    val percentageMale = (maleStats.size.toDouble / users.size) * 100
+    println(f"Percentages:\t\tFemale: %%${percentageFemale}%.2f\t\tMale: %%${percentageMale}%.2f\n")
     println("Comparing the difference between male and female listeners based on Number of Tracks they listen to. X1 = male mean number of tracks, and X2 = female mean number of tracks")
     println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
     println(s"Female Listening Stats:\t${femaleStats}")
@@ -120,6 +155,9 @@ object SometimeAroundMidnight {
     println("\nBut ya make everything alright, when ya hold and you sqeeze me tight.")
 
     val statsByCountryGroupTuple = User.getAvgListenStatsTuple(users)
+    val USPercentage = (statsByCountryGroupTuple._1.size.toDouble / users.size) * 100
+    val nonUSPercentage = (statsByCountryGroupTuple._2.size.toDouble / users.size) * 100
+    println(f"\nPercentages:\t\tUS: %%${USPercentage}%.2f\t\tNon-US: %%${nonUSPercentage}%.2f")
     println("\n\nComparing the difference between US listeners and non US listeners based on the average Amount of tracks they listen to\n" +
       "during exploratory analysis US made up roughly 1/3rd of Users. X1 = US mean number of tracks, and X2 = Non US mean number of tracks")
     println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
@@ -129,18 +167,23 @@ object SometimeAroundMidnight {
     println(testResults.message)
   }
 
+  /**
+    * I wanted to print out stats by product type, a lot of this was exploratory in nature. But yeah
+    * @param users
+    */
   def statsByProductType(users: Map[String, User]): Unit = {
+    println("Someone with the chemicals to believe.")
     val premiumUsers: DblVector = users.filter(_._2.songs.last.product.equals("premium")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
     val freeUsers: DblVector = users.filter(_._2.songs.last.product.equals("free")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
     val openUsers: DblVector = users.filter(_._2.songs.last.product.equals("open")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
     val basicDesktop: DblVector = users.filter(_._2.songs.last.product.equals("basic-desktop")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
 
-    val percentagePremiumUsers : Double = premiumUsers.size.toDouble / users.size
-    val percentageFreeUsers : Double = freeUsers.size.toDouble / users.size
-    val percentageOpenUsers : Double = openUsers.size.toDouble / users.size
-    val percentageBasicDesktop : Double = basicDesktop.size.toDouble / users.size
+    val percentagePremiumUsers : Double = (premiumUsers.size.toDouble / users.size) * 100
+    val percentageFreeUsers : Double = (freeUsers.size.toDouble / users.size) * 100
+    val percentageOpenUsers : Double = (openUsers.size.toDouble / users.size) * 100
+    val percentageBasicDesktop : Double = (basicDesktop.size.toDouble / users.size) * 100
 
-    println(f"\n\nPercentages\t\tPremium: ${percentagePremiumUsers}%.2f \tOpen: ${percentageOpenUsers}%.2f \tFree: ${percentageFreeUsers}%.2f \tDesktop: ${percentageBasicDesktop}%.2f")
+    println(f"\n\nPercentages\t\tPremium: %%${percentagePremiumUsers}%.2f \tOpen: %%${percentageOpenUsers}%.2f \tFree: %%${percentageFreeUsers}%.2f \tDesktop: %%${percentageBasicDesktop}%.2f")
     val premiumToFree = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats( freeUsers))
     val premiumToOpen = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats(openUsers))
     val premiumToDesktop = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats(basicDesktop))
