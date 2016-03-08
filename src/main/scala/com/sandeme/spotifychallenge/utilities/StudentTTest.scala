@@ -24,6 +24,13 @@ object StudentTTest {
     rValue / Math.sqrt((1 - Math.pow(rValue, 2)) / (sampleSize - 2))
   }
 
+  /**
+    * Takes in rValue, sample size and alpha value and returns a TTestResult Object
+    * @param rValue - rValue Result from a Pearson Coorelation
+    * @param sampleSize - size of the sample
+    * @param alpha - alpha value. tThe default is .05 /2 for a two tailed test
+    * @return @see TTestResult
+    */
   def tTestForPearsonCorrelation(rValue: Double, sampleSize: Int, alpha: Double = 0.050 / 2): TTestResult = {
     val tValue = getTForPearson(rValue, sampleSize)
     val critValue = getTCritValue(alpha, sampleSize - 2)

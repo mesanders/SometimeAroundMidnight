@@ -85,3 +85,12 @@ SELECT MIN(ms_played), MAX(ms_played) FROM endsong;
 .print "Check Min and Max of epoch timestamps, this is used to verify that the dates are in the correct range, most likely are, but yah"
 SELECT MIN(end_timestamp), MAX(end_timestamp) FROM endsong;
 
+.print
+.print "Checking distinct user_id, product type combinations."
+SELECT COUNT(*) FROM (SELECT DISTINCT users.user_id, product FROM users JOIN endsong ON users.user_id = endsong.user_id ORDER BY users.user_id);
+
+.print
+.print "Top 10 Tracks and the number of listens by female, and then by male"
+SELECT track_id, COUNT(track_id) as LISTENS FROM endsong JOIN users ON users.user_id = endsong.user_id WHERE gender ='female' GROUP BY track_id ORDER BY LISTENS DESC LIMIT 10;
+
+SELECT track_id, COUNT(track_id) as LISTENS FROM endsong JOIN users ON users.user_id = endsong.user_id WHERE gender ='male' GROUP BY track_id ORDER BY LISTENS DESC LIMIT 10;

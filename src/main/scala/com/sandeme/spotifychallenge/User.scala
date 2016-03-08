@@ -155,6 +155,25 @@ object User {
      users.toMap
   }
 
+  /**
+    *
+    * Take the inverse of the distinct tracks, versus the number of tracks they listen to. I take the inverse, because it will
+    * correlate a higher number of distinct songs. I didn't find this formula anywhere but experimented with a spreadsheet,
+    * the min number will be 1, the max number will be the total number of songs, assuming they will listen to each song once
+    * @param gender male or female
+    * @param users Mapping of Users
+    * @return
+    */
+  def getStatsAvgRepeatListens(gender: Char, users: Map[String, User]): Stats[Double] = {
+    val repeatListensVector: DblVector = users.filter(_._2.gender == gender)
+      .map{user => val songs = user._2.songs.toArray; 1.0 / (songs.map(_.trackId).distinct.size.toDouble / songs.size)}.toArray
+    new Stats(repeatListensVector)
+  }
+
+  def getStatsAvgRepeatListens(users: Array[User]): DblVector = {
+    users.map{user => val songs = user.songs.toArray; 1.0 / (songs.map(_.trackId).distinct.size.toDouble / songs.size)}.toArray
+  }
+
   def getStatsForTrackCountsByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
     val countVector: DblVector = users.filter(_._2.gender == gender).map(_._2.songs.size.toDouble).toArray
     new Stats(countVector)

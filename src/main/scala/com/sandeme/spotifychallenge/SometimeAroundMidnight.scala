@@ -3,7 +3,8 @@ package com.sandeme.spotifychallenge
 import java.io.File
 import java.util.logging.Logger
 
-import com.sandeme.spotifychallenge.utilities.StudentTTest
+import com.sandeme.spotifychallenge.utilities.Utility.DblVector
+import com.sandeme.spotifychallenge.utilities.{Stats, Utility, StudentTTest}
 
 /**
   * Created by sandeme on 3/5/16.
@@ -24,9 +25,18 @@ object SometimeAroundMidnight {
     }
 
     val songUsersTuple = loadSongAndUserFiles(userFile, songFile)
+    // Does some tests against demographic data.
     statsByDemographics(songUsersTuple._2)
+    // Lists some preliminary stats on Vectors of user data nad then a correlation table
+    pearsonCorrelationUserData(songUsersTuple._1, songUsersTuple._2.map(_._2).toArray)
   }
 
+  /**
+    * Takes in User file location and song file location and returns a tuple of Objects Created by the data
+    * @param userFile user file with the fields that were specified.
+    * @param songFile song file with records.
+    * @return Tuple of SongRecords array and a Map of Users
+    */
   def loadSongAndUserFiles(userFile: String, songFile: String): (Array[SongRecord], Map[String, User]) = {
     println("Loading Song Files...")
     val songs = SongRecord.loadSongRecords(songFile)
@@ -36,10 +46,39 @@ object SometimeAroundMidnight {
     (songs, users)
   }
 
-  def pearsonCorrelationUserData(records: (Array[SongRecord], Map[String, User])): Unit = {
-    val sumTrackListens = records._2.map(_._2.songs.size)
-    val avgTrackListens = records._2.map(in => in._2.songs.map(_.msPlayedTime).sum.toDouble / in._2.songs.size)
-    val distinctCountries = records._2.map(_._2.toString)
+  def pearsonCorrelationUserData(records: (Array[SongRecord], Array[User])): Unit = {
+    // These two variables will be used to map Countries to a categorical Number.
+    val countries = records._2.map(_.country).distinct
+    val products = records._2.map(_.songs.last.product).distinct
+    val labels = Array("avgRepeatListens", "sumTrackListens", "avgTrackListens", "accountAges", "accountType", "countries", "ageRanges", "gender")
+    val avgRepeatListens: DblVector = User.getStatsAvgRepeatListens(records._2)
+    val sumTrackListens: DblVector = records._2.map(_.songs.size.toDouble)
+    val avgTrackListens:DblVector = records._2.map(in => in.songs.map(_.msPlayedTime).sum.toDouble / in.songs.size)
+    val accountAges: DblVector = records._2.map(_.accountAgeWeeks.toDouble)
+    val accountType: DblVector = records._2.map(in => products.indexOf(in.songs.last.product).toDouble)
+    val byCountry: DblVector = records._2.map(in => countries.indexOf(in.country).toDouble)
+    val ageRanges: DblVector = records._2.map(_.ageRange.toDouble)
+    val genders: DblVector = records._2.map(_.gender.toDouble)
+
+    println(s"\n\n\nStatistics on the sum of the tracks listened for users:\n" + new Stats(sumTrackListens))
+    println(s"\n\nStatistics on the average time listening to tracks for users:\n" + new Stats(avgTrackListens))
+    println(s"\n\nStatistics on the account ages in weeks for users:\n" + new Stats(accountAges) + "\n\n")
+    println(s"\n\nStatistics on the Average Repeat Listens users:\n" + new Stats(avgRepeatListens) + "\n\n\n")
+
+    // 0 = sumTrackListens | 1 = avgTrackListens | 2 = accountAges | 3 = accountType | 4 = countries | 5 = ageRanges | 6 = genders
+    val matrix = Array(avgRepeatListens,sumTrackListens, avgTrackListens, accountAges, accountType, byCountry, ageRanges, genders)
+    println("R Values for Pearson Coorelation:")
+    print("".padTo(20, ' '))
+    labels.foreach(in => print(f"${in}%20s"))
+    println()
+    for(i <- 0 to matrix.size - 1) {
+      print(labels(i).padTo(20, ' '))
+      for (j <- 0 to matrix.size - 1) {
+        val correlation = Utility.correlation(matrix(i), matrix(j))
+        print(f"${correlation}%16.4f\t")
+      }
+      println
+    }
   }
 
   def statsByDemographics(users: Map[String, User]): Unit = {
@@ -64,6 +103,19 @@ object SometimeAroundMidnight {
     println(StudentTTest.studentTwoTailedTTest(maleStatsAvgTime, femaleStatsAvgTime, .05).message)
 
     println("\nBut ya make everything alright, when ya hold and you sqeeze me tight.")
+
+    val femaleSongsAvgRepeatListens = User.getStatsAvgRepeatListens('f', users)
+    val maleStatsAvgRepeatListens = User.getStatsAvgRepeatListens('m', users)
+
+    println("Comparing the difference between male and female listeners based on the average number of times that they repeat listens." +
+      "\n X1 = male mean average repeat listens, and X2 = female mean average repeatListens")
+    println("Null Hypothesis:\t X1 - X2 = 0\nAlternative Hypothesis:\t X1 - X2 != 0")
+    println(s"Female Listening Stats:\t${femaleSongsAvgRepeatListens}")
+    println(s"Male Listening Stats:\t${maleStatsAvgRepeatListens}\n")
+    println(StudentTTest.studentTwoTailedTTest(maleStatsAvgRepeatListens, femaleSongsAvgRepeatListens, .05).message)
+
+    println("\nBut ya make everything alright, when ya hold and you sqeeze me tight.")
+
     val statsByCountryGroupTuple = User.getAvgListenStatsTuple(users)
     println("\n\nComparing the difference between US listeners and non US listeners based on the average Amount of tracks they listen to\n" +
       "during exploratory analysis US made up roughly 1/3rd of Users. X1 = US mean number of tracks, and X2 = Non US mean number of tracks")
