@@ -29,6 +29,8 @@ object SometimeAroundMidnight {
     statsByDemographics(songUsersTuple._2)
     // Lists some preliminary stats on Vectors of user data nad then a correlation table
     pearsonCorrelationUserData(songUsersTuple._1, songUsersTuple._2.map(_._2).toArray)
+    // Stats by product Type
+    statsByProductType(songUsersTuple._2)
   }
 
   /**
@@ -50,7 +52,7 @@ object SometimeAroundMidnight {
     // These two variables will be used to map Countries to a categorical Number.
     val countries = records._2.map(_.country).distinct
     val products = records._2.map(_.songs.last.product).distinct
-    val labels = Array("avgRepeatListens", "sumTrackListens", "avgTrackListens", "accountAges", "accountType", "countries", "ageRanges", "gender")
+    val labels = Array("avgRepeatListens", "sumTrackListens", "avgTrackListens", "accountAges", "accountType", "countries", "ageRanges", "gender", "isPremium")
     val avgRepeatListens: DblVector = User.getStatsAvgRepeatListens(records._2)
     val sumTrackListens: DblVector = records._2.map(_.songs.size.toDouble)
     val avgTrackListens:DblVector = records._2.map(in => in.songs.map(_.msPlayedTime).sum.toDouble / in.songs.size)
@@ -59,14 +61,15 @@ object SometimeAroundMidnight {
     val byCountry: DblVector = records._2.map(in => countries.indexOf(in.country).toDouble)
     val ageRanges: DblVector = records._2.map(_.ageRange.toDouble)
     val genders: DblVector = records._2.map(_.gender.toDouble)
+    val isPremium: DblVector = records._2.map{user => if (user.songs.last.product.equals("premium")) 1.0 else 0.0}
 
     println(s"\n\n\nStatistics on the sum of the tracks listened for users:\n" + new Stats(sumTrackListens))
     println(s"\n\nStatistics on the average time listening to tracks for users:\n" + new Stats(avgTrackListens))
-    println(s"\n\nStatistics on the account ages in weeks for users:\n" + new Stats(accountAges) + "\n\n")
-    println(s"\n\nStatistics on the Average Repeat Listens users:\n" + new Stats(avgRepeatListens) + "\n\n\n")
+    println(s"\n\nStatistics on the account ages in weeks for users:\n" + new Stats(accountAges) + "\n")
+    println(s"\n\nStatistics on the Average Repeat Listens users:\n" + new Stats(avgRepeatListens) + "\n\n")
 
     // 0 = sumTrackListens | 1 = avgTrackListens | 2 = accountAges | 3 = accountType | 4 = countries | 5 = ageRanges | 6 = genders
-    val matrix = Array(avgRepeatListens,sumTrackListens, avgTrackListens, accountAges, accountType, byCountry, ageRanges, genders)
+    val matrix = Array(avgRepeatListens,sumTrackListens, avgTrackListens, accountAges, accountType, byCountry, ageRanges, genders, isPremium)
     println("R Values for Pearson Coorelation:")
     print("".padTo(20, ' '))
     labels.foreach(in => print(f"${in}%20s"))
@@ -126,6 +129,28 @@ object SometimeAroundMidnight {
     println(testResults.message)
   }
 
+  def statsByProductType(users: Map[String, User]): Unit = {
+    val premiumUsers: DblVector = users.filter(_._2.songs.last.product.equals("premium")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
+    val freeUsers: DblVector = users.filter(_._2.songs.last.product.equals("free")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
+    val openUsers: DblVector = users.filter(_._2.songs.last.product.equals("open")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
+    val basicDesktop: DblVector = users.filter(_._2.songs.last.product.equals("basic-desktop")).map(_._2.songs.map(_.msPlayedTime).sum.toDouble).toArray
+
+    val percentagePremiumUsers : Double = premiumUsers.size.toDouble / users.size
+    val percentageFreeUsers : Double = freeUsers.size.toDouble / users.size
+    val percentageOpenUsers : Double = openUsers.size.toDouble / users.size
+    val percentageBasicDesktop : Double = basicDesktop.size.toDouble / users.size
+
+    println(f"\n\nPercentages\t\tPremium: ${percentagePremiumUsers}%.2f \tOpen: ${percentageOpenUsers}%.2f \tFree: ${percentageFreeUsers}%.2f \tDesktop: ${percentageBasicDesktop}%.2f")
+    val premiumToFree = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats( freeUsers))
+    val premiumToOpen = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats(openUsers))
+    val premiumToDesktop = StudentTTest.studentTwoTailedTTest(new Stats(premiumUsers), new Stats(basicDesktop))
+    val freeToOpen = StudentTTest.studentTwoTailedTTest(new Stats(freeUsers), new Stats(openUsers))
+    println(s"\nStats for premium: " + new Stats(premiumUsers) + "\nStats for free: " + new Stats(freeUsers) + "\nStats for Open Users: " + new Stats(openUsers))
+    println(s"\n\nPremium to free comparing the difference of means avg listening time between premium users as X and Free Users as Y\n${premiumToFree.message}\n")
+    println(s"\nPremium to open comparing the difference means of avg listening time between premium and open users: Premium X and Open Y\n${premiumToOpen.message}")
+    println(s"\nPremium to Desktop comparing avg listening time between premium and desktop users: Premium X and Desktop Y\n${premiumToDesktop.message}")
+    println(s"\nFree to Open comparing avg listening. Free: X and Open: Y\n ${freeToOpen.message}")
+  }
   /**
     * Very lightweight command line parser, assumes key value pair separated by =
     * @param args each arg should be K,V separated by '='

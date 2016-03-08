@@ -29,6 +29,6 @@ class UtilityTest extends FunSuite {
     assert(rValueVectorVector3.abs - 0.6509371712829453 >= 0.0)
     assert(Utility.coefficientDetermination(vector, vector3).abs - 0.42 >= 0.0)
     assert(StudentTTest.getTForPearson(rValueVectorVector3, vector.size).abs - 2.425 >= 0.0)
-    println(StudentTTest.tTestForPearsonCorrelation(rValueVectorVector3, vector.size, 0.050).message)
+    assert(StudentTTest.tTestForPearsonCorrelation(rValueVectorVector3, vector.size, 0.050).reject == true)
   }
 }

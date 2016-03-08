@@ -84,7 +84,7 @@ object StudentTTest {
     * @param alpha : This value will be cut in half, so if it's .05, it will be .025 for a two tailed test
     * @return TTestResult, a case class with the result from the test
     */
-  def studentTwoTailedTTest(stats1: Stats[Double], stats2: Stats[Double], alpha: Double): TTestResult = {
+  def studentTwoTailedTTest(stats1: Stats[Double], stats2: Stats[Double], alpha: Double = 0.050): TTestResult = {
     if (alpha < .025   || alpha > .10) throw new Exception("Exception thrown, the alpha value was either too low or too high: Between .001 and .1")
     val meanDifferences = stats1.mean - stats2.mean
     val pooledVariance = Math.sqrt((stats1.variance / stats1.size) + (stats2.variance / stats2.size))

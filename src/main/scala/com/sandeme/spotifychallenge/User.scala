@@ -190,4 +190,5 @@ object User {
     val statsByNonUS: DblVector = users.filter(!_._2.country.equals("US")).map(_._2.songs.size.toDouble).toArray
     (new Stats(statsByUS), new Stats(statsByNonUS))
   }
+
 }

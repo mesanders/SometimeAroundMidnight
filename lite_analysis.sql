@@ -44,6 +44,10 @@ SELECT COUNT(DISTINCT user_id) FROM endsong WHERE user_id NOT IN (SELECT user_ID
 SELECT DISTINCT context, COUNT(*) as COUNT FROM endsong GROUP BY context ORDER BY COUNT DESC; 
 
 .print
+.print "List the distinct product types(account type) and the number of times each one occurs:" 
+SELECT product, COUNT(*) as COUNT FROM endsong GROUP BY product ORDER BY COUNT DESC;
+
+.print
 .print "Top 20 Users who listen to music"
 SELECT endsong.user_id, gender, country, acct_age_weeks, COUNT(endsong.user_id) as DUPS FROM endsong JOIN users ON endsong.user_id = users.user_id GROUP BY endsong.user_id ORDER BY DUPS DESC LIMIT 20;
 
