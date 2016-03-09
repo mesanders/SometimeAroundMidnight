@@ -6,12 +6,24 @@ import scala.io.Source
   * Created by sandeme on 3/5/16.
   */
 
-case class SongRecord(msPlayedTime: Int, context: String, trackId: String, product: String, endTimestamp: Double, userId: String, var sessionId: String) {
+case class SongRecord(msPlayedTime: Int, context: String, trackId: String, product: String, endTimestamp: Double, userId: String, var sessionId: String, var countryId: String = "") {
   override def toString(): String = {
     val formattedTimestamp: String =  String.format("%.2f", endTimestamp: java.lang.Double)
     val retVal = s"${msPlayedTime},${context},${trackId},${product},${formattedTimestamp},${userId}"
     if (sessionId.isEmpty) retVal else retVal + s",${sessionId}"
   }
+
+  /**
+    * Takes the endTimestamp and calculates the time at the top of the day. This can be used to group all records into the same Bucket
+    * @return
+    */
+  def getTopOfDay: Int = endTimestamp.toInt - (endTimestamp % (60 * 60 * 24)).toInt
+
+  /**
+    * Takes the endTimestamp and calculates the time at the top of the Hour. THis allows you to create hour buckets
+    * @return
+    */
+  def getTopOfHour: Int = endTimestamp.toInt - (endTimestamp % (60 * 60)).toInt
 }
 
 object SongRecord {
@@ -55,4 +67,13 @@ object SongRecord {
 
     new SongRecord(ms_played, context, track_id, product, end_timestamp, user_id, "")
   }
+
+  def groupByTopOfDay(songs: Array[SongRecord]): Map[Int, Int] = {
+    songs.map(_.getTopOfDay).groupBy(t => t).mapValues(_.size)
+  }
+
+  def groupByTopOfHour(songs: Array[SongRecord]): Map[Int, Int] = {
+    songs.map(_.getTopOfHour).groupBy(t => t).mapValues(_.size)
+  }
+
 }

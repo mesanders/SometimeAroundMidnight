@@ -27,4 +27,10 @@ class SongRecordTest extends FunSuite{
     assert(endsongs.size == 1342629)
   }
   */
+  test("Test topOfRecordTimestamp") {
+    val line = "0,album,00101320699d493697c7bdc3b5977792,open,1444582057.75,aea18678537d40fca61a70d8cd3329b4"
+    val songRecord = SongRecord.convertCsvToSongRecord(line)
+    assert(songRecord.getTopOfDay == 1444521600)
+    assert(songRecord.getTopOfHour == 1444579200)
+  }
 }

@@ -4,7 +4,9 @@ import java.io.File
 import java.util.logging.Logger
 
 import com.sandeme.spotifychallenge.utilities.Utility.DblVector
-import com.sandeme.spotifychallenge.utilities.{Stats, Utility, StudentTTest}
+import com.sandeme.spotifychallenge.utilities.{Clustering, Stats, Utility, StudentTTest}
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by sandeme on 3/5/16.
@@ -25,6 +27,14 @@ object SometimeAroundMidnight {
     }
 
     val songUsersTuple = loadSongAndUserFiles(userFile, songFile)
+
+    println("Run clustering Algorithm:")
+    runclusteringAlgorithm(songUsersTuple._1, songUsersTuple._2)
+    System.exit(0)
+    println("Aggregating number of tracks listened by UTC day. Saving to output file top_of_day_aggregation.csv")
+    outputTopOfDayCounts(songUsersTuple._1)
+    println("Aggregating number of tracks listened by UTC hour. Saving to output file. default = top_of_hour_aggregation.csv")
+    outputTopOfHourCounts(songUsersTuple._1)
 
     println("Generating sessions for users: ")
     User.generateSessions(songUsersTuple._2)
@@ -56,6 +66,38 @@ object SometimeAroundMidnight {
     (songs, users)
   }
 
+  /**
+    * prints the top of counts aggregation to a file
+    * @param songs
+    * @param fileOut
+    */
+  def outputTopOfDayCounts(songs: Array[SongRecord], fileOut: String = "top_of_day_aggregation.csv") = {
+    val writer = new java.io.PrintWriter(new java.io.File(fileOut))
+    try {
+      SongRecord.groupByTopOfDay(songs).toSeq.sortBy(_._1).foreach(v => writer.write(v._1 +","+ v._2 +"\n"))
+      val statsVector: DblVector = SongRecord.groupByTopOfDay(songs).toSeq.map(_._2.toDouble).toArray
+      println("Statistics for number of tracks listened by day:\n " + new Stats(statsVector) + "\n")
+    } finally {
+      writer.close
+    }
+  }
+
+  /**
+    * prints top of hour aggregation to a file
+    * @param songs
+    * @param fileOut
+    */
+  def outputTopOfHourCounts(songs: Array[SongRecord], fileOut: String = "top_of_hour_aggregation.csv") = {
+    val writer = new java.io.PrintWriter(new java.io.File(fileOut))
+    try {
+      SongRecord.groupByTopOfHour(songs).toSeq.sortBy(_._1).foreach(v => writer.write(v._1 +","+ v._2 +"\n"))
+      val statsVector: DblVector = SongRecord.groupByTopOfHour(songs).toSeq.map(_._2.toDouble).toArray
+      println("Statistics for number of tracks listened by hour:\n " + new Stats(statsVector) + "\n")
+    } finally {
+      writer.close
+    }
+  }
+
 
   /**
     * Very lightweight command line parser, assumes key value pair separated by =
@@ -71,4 +113,21 @@ object SometimeAroundMidnight {
     args.filter(_.contains("=")).map(in => in.split("=")(0) -> in.split("=")(1))(collection.breakOut): Map[String, String]
   }
 
+
+  def runclusteringAlgorithm(songs: Array[SongRecord], users: Map[String, User]) = {
+    println("Setting country for every song record loop through each record and go ahead and add each one there: " + System.currentTimeMillis())
+    songs.foreach(song => song.countryId = users(song.userId).country)
+    val labels: Array[String] = users.map(user => user._2.country).toArray.distinct.sorted
+    val distinctSongs: Array[String] = songs.map(_.trackId).distinct.sorted
+    val matrix = Array.ofDim[Double](labels.size, distinctSongs.size)
+
+    for(i <- 0 to labels.size - 1) {
+      for(j <- 0 to distinctSongs.size - 1) {
+        matrix(i)(j) =  songs.filter(_.trackId.equals(distinctSongs(j))).filter(_.countryId.equals(labels(i))).size.toDouble
+      }
+    }
+    println("Going over the clustering Algorithm: " + System.currentTimeMillis())
+    println("Label: " + matrix.size)
+    Clustering.hCluster(matrix)
+  }
 }

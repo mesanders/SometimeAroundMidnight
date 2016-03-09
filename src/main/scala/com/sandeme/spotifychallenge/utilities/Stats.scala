@@ -65,7 +65,7 @@ class Stats[T <% Double](private var values: DVector[T]) {
   }
 
   override def toString: String = {
-    s"Min: ${min}\tMax: ${max}\t Mean: ${mean}\t Std_Dev: ${stdDev}\t Size: ${size}\tSum: ${sum}\t SumSqr: ${sumSqr}\tVariance: ${variance}"
+    f"Min: ${min}\tMax: ${max}\t Mean: ${mean}%.4f\t Std_Dev: ${stdDev}%.4f\t Size: ${size}\tSum: ${sum}\t SumSqr: ${sumSqr}%.4f\tVariance: ${variance}%.4f"
   }
 }
 

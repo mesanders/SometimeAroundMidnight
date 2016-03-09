@@ -389,6 +389,7 @@ class UsersTest  extends FunSuite  {
     users = User.addSongRecordsToUsers(songs, users)
     User.generateSessions(users)
     assert(users.last._2.songs.map(_.sessionId).distinct.size == 31)
+    assert(SongRecord.groupByTopOfDay(songs).size == 6)
   }
 
 }
