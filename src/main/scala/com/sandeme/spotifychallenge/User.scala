@@ -122,7 +122,8 @@ object User {
 
   /**
     * Takes in a CSV representation of what a User Object looks like. This format is based on
-    * the format in the user_data_sample.csv provided.
+    * the format in the user_data_sample.csv provided. Ideally more error handling here. There is
+    * no Guarantee that someone doesn't shove a file that's bigger than this.
     *
     * @param input String in, that is CSV in the following format:
     *              gender, age bucket, country, account age in weeks, Anonymized UUID
@@ -171,27 +172,62 @@ object User {
     new Stats(repeatListensVector)
   }
 
+  /**
+    * Gets stats on the number of times users will repeat songs. I tried seeing how often people listened to music
+    * Again this is another method where the functions could be split into questions. The results could then be filtered
+    * instead of creating a ton of different methods. :(
+    * @param users
+    * @return
+    */
   def getStatsAvgRepeatListens(users: Array[User]): DblVector = {
     users.map{user => val songs = user.songs.toArray; 1.0 / (songs.map(_.trackId).distinct.size.toDouble / songs.size)}.toArray
   }
 
+  /**
+    * generates the number of tracks that users listen to separate by gender
+    * @param gender
+    * @param users
+    * @return
+    */
   def getStatsForTrackCountsByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
     val countVector: DblVector = users.filter(_._2.gender == gender).map(_._2.songs.size.toDouble).toArray
     new Stats(countVector)
   }
 
+  /**
+    * Generates statistics by gender on a map of users. After doing this for several stats, I realised that I could have
+    * just created one method, and then a bunch of filter methods. Meh.
+    * @param gender The gender that we are splitting the set by
+    * @param users Map[String, User]
+    * @return @see com.sandeme.spoitfychallenge.utilities.Stats
+    */
   def getStatsForAvgListenByGender(gender: Char, users: scala.collection.immutable.Map[String, User]): Stats[Double] = {
     val avgListenVector: DblVector = users.filter(_._2.gender == gender)
       .map{userD => val songs = userD._2.songs; songs.map(_.msPlayedTime).sum.toDouble / songs.size}.toArray
     new Stats(avgListenVector)
   }
 
+  /**
+    * Generates a tuple that splits United States and NonUnited states between two separate groups. Part of the reason I chose
+    * those two groups was because during my initial exploration US was 1/3rd of the sample.
+    * @param users
+    * @return
+    */
   def getAvgListenStatsTuple(users: Map[String, User]): (Stats[Double], Stats[Double]) = {
     val statsByUS: DblVector = users.filter(_._2.country.equals("US")).map(_._2.songs.size.toDouble).toArray
     val statsByNonUS: DblVector = users.filter(!_._2.country.equals("US")).map(_._2.songs.size.toDouble).toArray
     (new Stats(statsByUS), new Stats(statsByNonUS))
   }
 
+  /**
+    * Generates sessionIds based on the session data for each User. Ideally, would break this into two methods
+    * One method that generates it just for the user. Also could clean this up so that it would produce less side effects.
+    * Experimented with a few different MIN_LENGTH, which would be the minimum time between songs  that would indicate a session.
+    * The reasoning behind this, as I sit with Oliver watching a kids movie, is that a user might get up for a bio break.
+    * Stretch their legs, or do something that they aren't listening to music for a period of time.
+    * @param users Map[String, User]
+    * @return Map[String, User
+    */
   def generateSessions(users: Map[String, User]): Map[String, User] = {
     // arbitrary amount of time to test the length - let's do IDK 15 minutes
     val MIN_LENGTH= 900.0

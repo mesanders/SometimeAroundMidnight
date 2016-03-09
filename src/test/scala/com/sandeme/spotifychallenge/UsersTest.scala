@@ -24,6 +24,18 @@ class UsersTest  extends FunSuite  {
     SongRecord.convertCsvToSongRecord("5712,collection,b40c241ebbb245d4b1e5058e350f5cc4,open,1444567277.71,c48fc748b2164b23a96eeff365b0bcab"))
 
 
+/*
+  test("TESTING")  {
+    val users = User.addSongRecordsToUsers(
+      SongRecord.loadSongRecords("data/end_song_sample.csv"), User.loadFromFile("data/user_data_sample.csv"))
+    User.generateSessions(users)
+    val writer = new java.io.PrintWriter(new java.io.File("test.txt" ))
+    writer.write("ms_played,context,track_id,product,end_timestamp,user_id,session_id\n")
+    users.foreach(_._2.songs.foreach(song => writer.write(song.toString + "\n")))
+    writer.close
+  }
+*/
+
   test("Convert Age Bucket to Int and back") {
     assert(User.ageStringToInt("18 - 24") == 2)
     assert(User.ageStringToInt("55+") == 7)

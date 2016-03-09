@@ -33,6 +33,7 @@ class Stats[T <% Double](private var values: DVector[T]) {
   lazy val stdDev = if(variance < 0) 0 else Math.sqrt(variance)
   lazy val min = stats.minValue
   lazy val max = stats.maxValue
+  lazy val median = values(size / 2)
   lazy val size = values.size
   lazy val sum = stats.sum
   lazy val inverseSize: Double = 1.0 / (size - 1)
