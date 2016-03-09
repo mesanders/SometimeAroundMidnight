@@ -67,7 +67,8 @@ class UsersTest  extends FunSuite  {
     assert(stats.min == 0.0)
   }
 
-  test("Test generating Sessions: ") {
+  // Uses over 300 SongRecords to test the class. Needed to get a bunch of different timestmaps in order to test a good sessionID generator.
+  test("Test generating Sessions asserting that there are approx 31 sessions in this group based on the setting of 15 minute max between times") {
     val songs = Array(SongRecord.convertCsvToSongRecord("0,album,02e4bba99bf04ac585f2287106ce5af5,premium,1444843436.29,47cba57eef554e7fa85442464e2c2512"),
       SongRecord.convertCsvToSongRecord("0,album,21e026c340144d569aa1cfb39c0f66c9,premium,1444843315.46,47cba57eef554e7fa85442464e2c2512"),
       SongRecord.convertCsvToSongRecord("0,album,2e685d0633204bbea0b17e874840c960,premium,1444606298.02,47cba57eef554e7fa85442464e2c2512"),
@@ -374,7 +375,8 @@ class UsersTest  extends FunSuite  {
 
     var users = Map("47cba57eef554e7fa85442464e2c2512" -> User.convertCsvUser("female,0 - 17,AR,0,47cba57eef554e7fa85442464e2c2512"))
     users = User.addSongRecordsToUsers(songs, users)
-
-    users.take(1).last._2.songs.sortBy(_.endTimestamp).foreach(record => println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(record.endTimestamp.toLong * 1000))))
+    User.generateSessions(users)
+    assert(users.last._2.songs.map(_.sessionId).distinct.size == 31)
   }
+
 }

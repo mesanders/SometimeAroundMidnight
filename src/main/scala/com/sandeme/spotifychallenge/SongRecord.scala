@@ -6,10 +6,11 @@ import scala.io.Source
   * Created by sandeme on 3/5/16.
   */
 
-case class SongRecord(msPlayedTime: Int, context: String, trackId: String, product: String, endTimestamp: Double, userId: String) {
+case class SongRecord(msPlayedTime: Int, context: String, trackId: String, product: String, endTimestamp: Double, userId: String, var sessionId: String) {
   override def toString(): String = {
     val formattedTimestamp: String =  String.format("%.2f", endTimestamp: java.lang.Double)
-    s"${msPlayedTime},${context},${trackId},${product},${formattedTimestamp},${userId}"
+    val retVal = s"${msPlayedTime},${context},${trackId},${product},${formattedTimestamp},${userId}"
+    if (sessionId.isEmpty) retVal else retVal + s",${sessionId}"
   }
 }
 
@@ -52,6 +53,6 @@ object SongRecord {
     val end_timestamp = splits(4).toDouble
     val user_id = splits(5)
 
-    new SongRecord(ms_played, context, track_id, product, end_timestamp, user_id)
+    new SongRecord(ms_played, context, track_id, product, end_timestamp, user_id, "")
   }
 }

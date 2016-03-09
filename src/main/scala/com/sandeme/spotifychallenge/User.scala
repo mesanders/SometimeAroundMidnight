@@ -22,7 +22,7 @@ import scala.collection.mutable.{ArrayBuffer}
   * @param userId Anonymized UUID
   */
 case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: Int, userId: String) {
-  val songs: scala.collection.mutable.ArrayBuffer[SongRecord] = new ArrayBuffer[SongRecord]
+  var songs: scala.collection.mutable.ArrayBuffer[SongRecord] = new ArrayBuffer[SongRecord]
 
   /**
     * Default constructor that creates a blank object.
@@ -30,6 +30,7 @@ case class User(gender: Char, ageRange: Int, country: String, accountAgeWeeks: I
   def this() {
     this('u', 0, "unkown", -1, "unknown")
   }
+
 
   /**
     * @return String representation back to the original format.
@@ -191,4 +192,20 @@ object User {
     (new Stats(statsByUS), new Stats(statsByNonUS))
   }
 
+  def generateSessions(users: Map[String, User]): Map[String, User] = {
+    // arbitrary amount of time to test the length - let's do IDK 15 minutes
+    val MIN_LENGTH= 900.0
+    var previousTimestamp = 0.0
+    var previousSessionId = generateUUID
+
+      users.foreach(user => user._2.songs.sortBy(_.endTimestamp)
+      .map{song =>
+        song.sessionId = if (song.endTimestamp - previousTimestamp  <= 0) previousSessionId else generateUUID
+        previousSessionId = song.sessionId
+        previousTimestamp = song.endTimestamp + (song.msPlayedTime.toDouble / 1000) + MIN_LENGTH
+      })
+    users
+  }
+
+  def generateUUID = java.util.UUID.randomUUID.toString
 }
