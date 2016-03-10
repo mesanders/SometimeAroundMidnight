@@ -485,14 +485,14 @@ While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent
 ### Preliminary list of Questions in my mind (* indicates suggestions from Spotify)
 
 #### Some tasks that I feel that I might need to do:
-1. Identify the different services spotify already offers
-2. Identify different types of algorithms that they might use ( Extrapolate based on the services ). 
-3. Identify possible suggestions to improve their services
-4. Go through each data set and verify that the data is clean, identify that categorical data adds up with those two categories. Find rows that 	might be missing or have incomplete data (most likely data is clean, but make sure you identify this step).
-5. We need to create Sessions…. Will have to do some kind of sessioning of the data, this will have to go through a data transformation, and 	create a new field for session ID, this needs to be generated, most likely by the amount of time between each track. Note: This should be done 	before answering any questions
-6. Create session buckets based on clustering.
-7. Create Top of Date Calculated field. This can be calculated via (Epoch Timestamps - (Timestamp % 86400).
-8. Identify any other possibly calculated fields
+* Identify the different services spotify already offers
+* Identify different types of algorithms that they might use ( Extrapolate based on the services ). 
+* Identify possible suggestions to improve their services
+* Go through each data set and verify that the data is clean, identify that categorical data adds up with those two categories. Find rows that 	might be missing or have incomplete data (most likely data is clean, but make sure you identify this step).
+* We need to create Sessions…. Will have to do some kind of sessioning of the data, this will have to go through a data transformation, and 	create a new field for session ID, this needs to be generated, most likely by the amount of time between each track. Note: This should be done 	before answering any questions
+* Create session buckets based on clustering.
+* Create Top of Date Calculated field. This can be calculated via (Epoch Timestamps - (Timestamp % 86400).
+* Identify any other possibly calculated fields
 
 #### Questions to Ask the Data:
 [x]**Determine whether male and female listeners are significantly different in their overall listening (in terms of the count of tracklistens, or in terms of the total time spent listening)
