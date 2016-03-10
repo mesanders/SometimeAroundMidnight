@@ -20,6 +20,10 @@ US users were found to listen to more music than Non-US users. This statistic is
 
 I broke down the different sessions by day and by hour to see if I can find trends among days. My definition of a session was any set of tracks that were played within a 15 minute window + the length of the previous song played. As a user, there are often times where I get up or get interrupted, but I would consider 2 hours of listening to music a 2 hour session, even if I pause. Each day the number of amount each user listen were consistent.  I plotted the top of day aggregation and top of hour aggregations. After running the code it will generate two separate files with those trends. You could see oscilating number of listeners per hour, which would correlate to the number of users in different time zones. There are opportunities to expand market share. 
 
+Now that I have better understanding of the data, I have a few more experiments that I would like to run. One would be to do some sort of logistic regression to find out what variables would affect a user to become a premium user. Understanding the features that premium users use the most would also be helpful in understanding those specific users behavior. 
+
+Below is a breakdown of all the statistics, and everything is repeatable. The setup.sh script will download and run all the analysis, replicating almost everything below.
+
 ## My approach to the overall task.
 
 First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
@@ -526,18 +530,35 @@ Changed and Not premium at the end of the session %37.5335
 
 #### Questions to Ask the Data:
 [x]**Determine whether male and female listeners are significantly different in their overall listening (in terms of the count of tracklistens, or in terms of the total time spent listening)
+
 [x]**Break the user listening into sessions (exactly what is a listening session is up to you to define)
+
 [x]**Look for correlations between user demographic features (or their behavior) and their overall listening, or their average sessionlengths
+
 [x]**Find a clustering of user categories that delineates some interesting or useful behavior traits (or show that no clustering makes sense)
+
 [x]Is there a correlation between Premium and Open accounts and the amount of tracks, or the types of tracks that users listen to
-[ ]Identify the number of premium vs open by country and and see if there is a coorelation
-[ ]Identify top songs per day and see if there are any trends. 
-[ ]Identify how many times individual users listen repeat listen to songs. Do this for two separate things, within a Session, and Across Sessions.
+
+[x]Identify the number of premium vs open by country and and see if there is a coorelation
+
+[x]Identify top songs per day and see if there are any trends. 
+
+[x]Identify how many times individual users listen repeat listen to songs. Do this for two separate things, within a Session, and Across Sessions.
+
 [ ]Identify whether or not users change from playlist to artist etc, within one session. Identify frequency across users, separate by type of 	accounts and by gender, break this into multiple slices to view it.
+
 [x] Create clustered sessions, and create buckets for each of those session lengths
+
 [x] Breakdown Countries and number of Premium vs Open Account Types
+
 [ ] Possible Regression to identify estimated time of listening sessions: Possible Model:  Age Bucket, Gender, Account Type, Account Age, 
+
 [x] Identify Number of sessions per day, slice and dice by different Demographics
-[x] Identify the number of sessions and average session lenght, Also Average total listening length per day. Split this up by Open VSPremium. 	Find some sort of threshold in the Open users…. If Open Users Listen past that threshold, maybe they have some kind of opportunityto get a 	trial on premium. The Suggestion could be something like: “Based on how much you listen to music, you could listen to X moresongs, based on the 	number of ads you get.”
-[x] Create a Matrix by Country and tracks listened to. Run Hierarchal clustering analysis to see what groups emerge by Country. Could then further analyze the subgroups for song recommendation based on clumped countries
-[x] For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do this 	for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be 	terminated because they were done with the session	
+
+[x] Identify the number of sessions and average session lenght, Also Average total listening length per day. Split this up by Open VSPremium. 	
+
+[ ] Find some sort of threshold in the Open users…. If Open Users Listen past that threshold, maybe they have some kind of opportunityto get a trial on premium. The Suggestion could be something like: “Based on how much you listen to music, you could listen to X moresongs, based on the 	number of ads you get.”
+
+[x] Create a Matrix by Country and tracks listened to. Run Hierarchal clustering analysis to see what groups emerge by Country. Could then  further analyze the subgroups for song recommendation based on clumped countries
+
+[x] For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do  this 	for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be 	terminated because they were done with the session	
