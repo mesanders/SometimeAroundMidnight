@@ -8,10 +8,60 @@
 
 
 # High Level Analysis:
+Based on the two tables, I didn't find anything that, at this point that I could suggest a change to the product itself. There are a lot of variables and unknowns that I dont' have access to. 
+
+The users in the sample were fairly even at a 48/52% split. There were roughly 26 unknown users.  Playlists outnumbered everything else on the unique context. 
+
+US users were found to listen to more music than Non-US users. This statistic is why I chose to break down the type of users by countries. I decided to use hierarchical clustering. Despite the long run time because, I decided to do it based on the count for each track by country. This took a long time, but broke down the countries into a nice tree, which is below. Further analysis could be done amongst the groups to find out patterns. 
+
+I broke down the different sessions by day and by hour to see if I can find trends among days. Each day the number of amount each user listen were consistent. 
+
+Premium Users listen to to more music than non-premium users. Which would make sense. Also during this session the users that changed product throughout the 14 day period about 62.5% of the switch went from open to premium. 
+
+## My approach to the overall task.
+
+First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
+
+- First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn't want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. 
+
+- Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn't have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.
+
+- Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  
+
+- Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)
+
+- Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).
+
+- Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  
+
+- Scala: 
+1. Create two classes with companion objects that will load the two major data structures based on the file format. 
+2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
+3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  
+4) Create a launcher program that will run specific analysis
+
+
+## Some other information I decided to unstrategically put right here.
+
+**System Specs**
+Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. 
+*MEMORY*: 8GB Ram 
+*CPU*: 4 Core Intel i5-3317U @ 1.70GHz
+
+**Tools of Choice**: Scala, Bash, sqlite3, Intellij, Maven
+
+>Why did you choose Scala and not R or Python?
+
+Good Question! Glad you asked. I wanted to make this as painful as possible. I primarily do Java development and I have been trying to use Scala more in general. Even if Spotify chooses that I am not worthy, I wanted to use this as a chance to get better. But geegolly pandas, dataframes and numpy would have made my life easier. 
+
+>Why did you use almost no libraries in your Scala code?
+
+Sure, I could have used Apache Math Commons, or breeze.io, and I probably should have. In most production situations, I would definitely use a library that is tried and true; however, using a library doesn't allow me to showcase my ability to be lightweight, or understand some very broad concepts. 
+
+While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent most of the time on the couch in my basement while my son was jumping on my back while my wife was blaring songs (on Spotify, I might add). Needless to say, the overall quality could be better :)
 
 
 ## Exploratory Analysis from sqlite3
-
 
 **Number of total users in the user table.**
 9565
@@ -149,7 +199,7 @@ Male Listening Stats:	Min: 1.0	Max: 4409.0	 Mean: 138.8550	 Std_Dev: 253.2248	 S
 
 Do not Reject the null Hypothesis the difference between the two means are not statistically significant. t value: -0.6740309581639912	T Crit Value: 1.96 and -1.96
 
-#### Difference between male and female listenrs on the average amount of time they listen to tracks
+#### Difference between male and female listeners on the average amount of time they listen to tracks
 
 Comparing the difference between male and female listeners based on the average amount of time that they listen to tracks. X1 = male mean average time listening, and X2 = female mean average Time listening
 Null Hypothesis:	 X1 - X2 = 0
@@ -415,50 +465,6 @@ Changed and Not premium at the end of the session %37.5335
                   IN
                   TR
 ```
-
-
-
-## My approach to the overall task.
-
-First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doesn't mean anything, sorry, I'm too excited.
-
-- First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn't want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. 
-
-- Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn't have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.
-
-- Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  
-
-- Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)
-
-- Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).
-
-- Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  
-
-- Scala: 
-1. Create two classes with companion objects that will load the two major data structures based on the file format. 
-2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
-3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  
-4) Create a launcher program that will run specific analysis
-
-
-## Some other information I decided to unstrategically put right here.
-
-**System Specs**
-Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. 
-*MEMORY*: 8GB Ram 
-*CPU*: 4 Core Intel i5-3317U @ 1.70GHz
-
-**Tools of Choice**: Scala, Bash, sqlite3, Intellij, Maven
-
->Why did you choose Scala and not R or Python?
-
-Good Question! Glad you asked. I wanted to make this as painful as possible. I primarily do Java development and I have been trying to use Scala more in general. Even if Spotify chooses that I am not worthy, I wanted to use this as a chance to get better. But geegolly pandas, dataframes and numpy would have made my life easier. 
-
->Why did you use almost no libraries in your Scala code?
-
-Sure, I could have used Apache Math Commons, or breeze.io, and I probably should have. In most production situations, I would definitely use a library that is tried and true; however, using a library doesn't allow me to showcase my ability to be lightweight, or understand some very broad concepts. 
-
-While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent most of the time on the couch in my basement while my son was jumping on my back while my wife was blaring songs (on Spotify, I might add). Needless to say, the overall quality could be better :)
 
 ## Task: 
 > Please download the dataset from: https://storage.googleapis.com/ml_take_home/data_sample.tgz, which contains a sample of anonymized user listening data in Spotify. We'd like you to use this data first to do a warm-up exercise, then to perform an open-ended exploration

@@ -24,6 +24,8 @@ case class SongRecord(msPlayedTime: Int, context: String, trackId: String, produ
     * @return
     */
   def getTopOfHour: Int = endTimestamp.toInt - (endTimestamp % (60 * 60)).toInt
+
+  def getFourBucketsPerDay: Int = (endTimestamp.toInt - (endTimestamp % (60 * 60)).toInt) % 4
 }
 
 object SongRecord {
@@ -70,6 +72,10 @@ object SongRecord {
 
   def groupByTopOfDay(songs: Array[SongRecord]): Map[Int, Int] = {
     songs.map(_.getTopOfDay).groupBy(t => t).mapValues(_.size)
+  }
+
+  def groupByFourthOfDay(songs: Array[SongRecord]): Map[Int, Int] = {
+    songs.map(_.getFourBucketsPerDay).groupBy(t => t).mapValues(_.size)
   }
 
   def groupByTopOfHour(songs: Array[SongRecord]): Map[Int, Int] = {

@@ -101,6 +101,9 @@ object SometimeAroundMidnight {
   }
 
 
+  def outputDataPartionedIntoDailyBuckets
+
+
   /**
     * Very lightweight command line parser, assumes key value pair separated by =
     * @param args each arg should be K,V separated by '='
