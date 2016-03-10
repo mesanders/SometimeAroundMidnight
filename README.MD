@@ -42,10 +42,11 @@ First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doe
 
 
 1. Create two classes with companion objects that will load the two major data structures based on the file format. 
-2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
+2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). A) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
 3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  
-4) Create a launcher program that will run specific analysis
-
+4. Create a Cluster Class that will do k-means or hclustering depending on the type of cluster.
+5. Create a launcher program that will run specific analysis
+6. Scalatest testing framework to test every method used throughout the system.
 
 ## Some other information I decided to unstrategically put right here.
 

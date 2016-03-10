@@ -1021,6 +1021,59 @@ body .markdown-body
 <p>Usage: Shell script <code>./setup runsql</code> will run sqlite3 on the lite_analysis.sql file, which has multiple exploratory queries. </p>
 </blockquote>
 <h1 id="high-level-analysis"><a name="user-content-high-level-analysis" href="#high-level-analysis" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>High Level Analysis:</h1>
+<p>Based on the two tables, I didn&rsquo;t find anything that, where I could suggest any change to the product itself. I did have a few ideas for further experimentation. Access to more data could reveal better insights into suggestions on the product itself. The main thing that the data told me was that most of the premium users are in the United States. Premium users use the service far more than other users, and there is a weak to moderate correlation between the age of the account and premium users. There is also a weak correlation between premium users and the country. It would be nice to experiment further with users to see how user experience plays into paying for a premium service based on the positive correlation between the amount users use the service. </p>
+<p>One of the more interesting trends I noticed was the amount of users that changed during the 14 day period was roughly 3.8% of the users that The percentage of those 3.8% that went to premium was 67% of that group that changed. Premium users listen to more music than the other types of users. They are more engaged with the product. An experiment that might be worth testing is looking at increased usage for a user after they used the product for some time. As open users increase their usage, provide some of the premium services for free, without them opting into anything for a period of time. However, only offer this to users whose account has aged passed some threshold based upon further analysis.</p>
+<p>The top 5-10 countries by number of users had the same set of countries with premium accounts. I was trying to use differnet lenses to look at how premium users were set up because my initial reaction is to see if there was a way to correlate how premium users differentiated with the product. More heterogenous data sets would be helpful. </p>
+<p>Gender in the sample were fairly even at a 48/52% split. There were roughly 26 unknown users.  Playlists outnumbered everything else on the unique context. Gender and age didn&rsquo;t have statistically signifcant relationships among other variables. Women were more likely to repeat songs. </p>
+<p>US users were found to listen to more music than Non-US users. This statistic is why I chose to break down the type of users by countries. I decided to use hierarchical clustering. Despite the long run time because, I decided to do it based on the count for each track by country. This took a long time, but broke down the countries into a nice tree, which is below. Further analysis could be done amongst the groups to find out patterns. There are 4 main groups that the countries were broken down into.  </p>
+<p>I broke down the different sessions by day and by hour to see if I can find trends among days. My definition of a session was any set of tracks that were played within a 15 minute window + the length of the previous song played. As a user, there are often times where I get up or get interrupted, but I would consider 2 hours of listening to music a 2 hour session, even if I pause. Each day the number of amount each user listen were consistent.  I plotted the top of day aggregation and top of hour aggregations. After running the code it will generate two separate files with those trends. You could see oscilating number of listeners per hour, which would correlate to the number of users in different time zones. There are opportunities to expand market share. </p>
+<p>Now that I have better understanding of the data, I have a few more experiments that I would like to run. One would be to do some sort of logistic regression to find out what variables would affect a user to become a premium user. Understanding the features that premium users use the most would also be helpful in understanding those specific users behavior. </p>
+<p>Below is a breakdown of all the statistics, and everything is repeatable. The setup.sh script will download and run all the analysis, replicating almost everything below.</p>
+<h2 id="my-approach-to-the-overall-task"><a name="user-content-my-approach-to-the-overall-task" href="#my-approach-to-the-overall-task" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>My approach to the overall task.</h2>
+<p>First things first. Hi. Thank you. I&rsquo;m excited to be here. Blork. Wait, that doesn&rsquo;t mean anything, sorry, I&rsquo;m too excited.</p>
+<ul>
+<li>
+<p>First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn&rsquo;t want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. </p>
+</li>
+<li>
+<p>Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn&rsquo;t have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.</p>
+</li>
+<li>
+<p>Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  </p>
+</li>
+<li>
+<p>Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)</p>
+</li>
+<li>
+<p>Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).</p>
+</li>
+<li>
+<p>Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  </p>
+</li>
+</ul>
+<ol>
+<li>Create two classes with companion objects that will load the two major data structures based on the file format. </li>
+<li>Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). A) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. </li>
+<li>Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  </li>
+<li>Create a Cluster Class that will do k-means or hclustering depending on the type of cluster.</li>
+<li>Create a launcher program that will run specific analysis</li>
+<li>Scalatest testing framework to test every method used throughout the system.</li>
+</ol>
+<h2 id="some-other-information-i-decided-to-unstrategically-put-right-here"><a name="user-content-some-other-information-i-decided-to-unstrategically-put-right-here" href="#some-other-information-i-decided-to-unstrategically-put-right-here" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Some other information I decided to unstrategically put right here.</h2>
+<p><strong>System Specs</strong><br />
+Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. <br />
+<em>MEMORY</em>: 8GB Ram <br />
+<em>CPU</em>: 4 Core Intel i5-3317U @ 1.70GHz</p>
+<p><strong>Tools of Choice</strong>: Scala, Bash, sqlite3, Intellij, Maven</p>
+<blockquote>
+<p>Why did you choose Scala and not R or Python?</p>
+</blockquote>
+<p>Good Question! Glad you asked. I wanted to make this as painful as possible. I primarily do Java development and I have been trying to use Scala more in general. Even if Spotify chooses that I am not worthy, I wanted to use this as a chance to get better. But geegolly pandas, dataframes and numpy would have made my life easier. </p>
+<blockquote>
+<p>Why did you use almost no libraries in your Scala code?</p>
+</blockquote>
+<p>Sure, I could have used Apache Math Commons, or breeze.io, and I probably should have. In most production situations, I would definitely use a library that is tried and true; however, using a library doesn&rsquo;t allow me to showcase my ability to be lightweight, or understand some very broad concepts. </p>
+<p>While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent most of the time on the couch in my basement while my son was jumping on my back while my wife was blaring songs (on Spotify, I might add). Needless to say, the overall quality could be better :)</p>
 <h2 id="exploratory-analysis-from-sqlite3"><a name="user-content-exploratory-analysis-from-sqlite3" href="#exploratory-analysis-from-sqlite3" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Exploratory Analysis from sqlite3</h2>
 <p><strong>Number of total users in the user table.</strong><br />
 9565</p>
@@ -1100,6 +1153,27 @@ AU,216<br />
 CA,196<br />
 PH,174<br />
 CL,139</p>
+<p><strong>Number of distinct premium accounts By country, Top 20 countries</strong><br />
+US|587<br />
+GB|137<br />
+SE|117<br />
+DE|81<br />
+BR|66<br />
+NL|64<br />
+MX|61<br />
+AU|53<br />
+NO|53<br />
+ES|47<br />
+FR|43<br />
+AR|41<br />
+IT|36<br />
+CA|34<br />
+FI|31<br />
+DK|30<br />
+TR|25<br />
+NZ|22<br />
+PH|17<br />
+BE|15</p>
 <p><strong>Total Number of Users not in the US:</strong> <br />
 6418</p>
 <p><strong>Total Number of Users in the US: </strong><br />
@@ -1129,7 +1203,7 @@ Alternative Hypothesis:  X1 - X2 != 0<br />
 Female Listening Stats: Min: 1.0    Max: 3471.0  Mean: 142.3325  Std_Dev: 250.2974   Size: 4560 Sum: 649036.0    SumSqr: 377994664.0000 Variance: 62648.7774<br />
 Male Listening Stats:   Min: 1.0    Max: 4409.0  Mean: 138.8550  Std_Dev: 253.2248   Size: 4979 Sum: 691359.0    SumSqr: 415201913.0000 Variance: 64122.7934</p>
 <p>Do not Reject the null Hypothesis the difference between the two means are not statistically significant. t value: -0.6740309581639912  T Crit Value: 1.96 and -1.96</p>
-<h4 id="difference-between-male-and-female-listenrs-on-the-average-amount-of-time-they-listen-to-tracks"><a name="user-content-difference-between-male-and-female-listenrs-on-the-average-amount-of-time-they-listen-to-tracks" href="#difference-between-male-and-female-listenrs-on-the-average-amount-of-time-they-listen-to-tracks" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Difference between male and female listenrs on the average amount of time they listen to tracks</h4>
+<h4 id="difference-between-male-and-female-listeners-on-the-average-amount-of-time-they-listen-to-tracks"><a name="user-content-difference-between-male-and-female-listeners-on-the-average-amount-of-time-they-listen-to-tracks" href="#difference-between-male-and-female-listeners-on-the-average-amount-of-time-they-listen-to-tracks" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Difference between male and female listeners on the average amount of time they listen to tracks</h4>
 <p>Comparing the difference between male and female listeners based on the average amount of time that they listen to tracks. X1 = male mean average time listening, and X2 = female mean average Time listening<br />
 Null Hypothesis:     X1 - X2 = 0<br />
 Alternative Hypothesis:  X1 - X2 != 0<br />
@@ -1634,50 +1708,6 @@ Changed and Not premium at the end of the session %37.5335</p>
                   TR
 </code></pre>
 
-<h2 id="my-approach-to-the-overall-task"><a name="user-content-my-approach-to-the-overall-task" href="#my-approach-to-the-overall-task" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>My approach to the overall task.</h2>
-<p>First things first. Hi. Thank you. I&rsquo;m excited to be here. Blork. Wait, that doesn&rsquo;t mean anything, sorry, I&rsquo;m too excited.</p>
-<ul>
-<li>
-<p>First thing I did was read through the instructions 3x. While reading the instructions, I was thinking that I didn&rsquo;t want to just so I could run stats libraries, but show that 1) I understood the concepts and math behind the stats  2) Show that I could write testable software in a statically typed, compiled language. </p>
-</li>
-<li>
-<p>Open up a MARKDOWN.MD, and start taking notes. I wanted to make sure I captured all my tasks into a unified document. Also I wanted to capture my thought process. Even if I didn&rsquo;t have time to complete them all, I wanted to at least get my brain thinking about the problem. All of this was before I actually did any kind of analysis.</p>
-</li>
-<li>
-<p>Set up my environment. Choose some tools. Roll up sleeves, get hands dirty.  </p>
-</li>
-<li>
-<p>Set up a script that will automatically download the data, do some quick removal of any full row duplicates. Also, I wanted a script that could also run the sqlite3 script and compile and run the scala library and run tests. Running tests is really important for this analysis because I implemented a lot of the Stats myself instead of using a library (I KNOW I WOULD NEVER DO THIS normally.)</p>
-</li>
-<li>
-<p>Experiment with SQLite3 on the data to get a quick way to explore the data before doing any task. Primarily summarizations, understanding where users are located, how many unique users there are. I also used SQL to quickly make sure that all the users in the SONGs table are in the USERS table. Running SQL against the data is a quick way to test that my scala code was working (Example, make sure the same number of users are returned with filters, and that avg, sum etc are bringing back what I expect).</p>
-</li>
-<li>
-<p>Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  </p>
-</li>
-<li>
-<p>Scala: <br />
-1. Create two classes with companion objects that will load the two major data structures based on the file format. <br />
-2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. <br />
-3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.<br />
-4) Create a launcher program that will run specific analysis</p>
-</li>
-</ul>
-<h2 id="some-other-information-i-decided-to-unstrategically-put-right-here"><a name="user-content-some-other-information-i-decided-to-unstrategically-put-right-here" href="#some-other-information-i-decided-to-unstrategically-put-right-here" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Some other information I decided to unstrategically put right here.</h2>
-<p><strong>System Specs</strong><br />
-Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. <br />
-<em>MEMORY</em>: 8GB Ram <br />
-<em>CPU</em>: 4 Core Intel i5-3317U @ 1.70GHz</p>
-<p><strong>Tools of Choice</strong>: Scala, Bash, sqlite3, Intellij, Maven</p>
-<blockquote>
-<p>Why did you choose Scala and not R or Python?</p>
-</blockquote>
-<p>Good Question! Glad you asked. I wanted to make this as painful as possible. I primarily do Java development and I have been trying to use Scala more in general. Even if Spotify chooses that I am not worthy, I wanted to use this as a chance to get better. But geegolly pandas, dataframes and numpy would have made my life easier. </p>
-<blockquote>
-<p>Why did you use almost no libraries in your Scala code?</p>
-</blockquote>
-<p>Sure, I could have used Apache Math Commons, or breeze.io, and I probably should have. In most production situations, I would definitely use a library that is tried and true; however, using a library doesn&rsquo;t allow me to showcase my ability to be lightweight, or understand some very broad concepts. </p>
-<p>While doing most of the tasks over the weekend of 3/5/2016 and 3/6/2016, I spent most of the time on the couch in my basement while my son was jumping on my back while my wife was blaring songs (on Spotify, I might add). Needless to say, the overall quality could be better :)</p>
 <h2 id="task"><a name="user-content-task" href="#task" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Task:</h2>
 <blockquote>
 <p>Please download the dataset from: <a href="https://storage.googleapis.com/ml_take_home/data_sample.tgz">https://storage.googleapis.com/ml_take_home/data_sample.tgz</a>, which contains a sample of anonymized user listening data in Spotify. We&rsquo;d like you to use this data first to do a warm-up exercise, then to perform an open-ended exploration</p>
@@ -1701,30 +1731,31 @@ Everything was done on my Samsung Series 9 Laptop Running Ubuntu 15.10. <br />
 </code></pre>
 <h3 id="preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify"><a name="user-content-preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify" href="#preliminary-list-of-questions-in-my-mind-indicates-suggestions-from-spotify" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Preliminary list of Questions in my mind (* indicates suggestions from Spotify)</h3>
 <h4 id="some-tasks-that-i-feel-that-i-might-need-to-do"><a name="user-content-some-tasks-that-i-feel-that-i-might-need-to-do" href="#some-tasks-that-i-feel-that-i-might-need-to-do" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Some tasks that I feel that I might need to do:</h4>
-<ol>
+<ul>
 <li>Identify the different services spotify already offers</li>
 <li>Identify different types of algorithms that they might use ( Extrapolate based on the services ). </li>
 <li>Identify possible suggestions to improve their services</li>
-<li>Go through each data set and verify that the data is clean, identify that categorical data adds up with those two categories. Find rows that     might be missing or have incomplete data (most likely data is clean, but make sure you identify this step).</li>
-<li>We need to create Sessions…. Will have to do some kind of sessioning of the data, this will have to go through a data transformation, and    create a new field for session ID, this needs to be generated, most likely by the amount of time between each track. Note: This should be done  before answering any questions</li>
+<li>Go through each data set and verify that the data is clean, identify that categorical data adds up with those two categories. Find rows that  might be missing or have incomplete data (most likely data is clean, but make sure you identify this step).</li>
+<li>We need to create Sessions…. Will have to do some kind of sessioning of the data, this will have to go through a data transformation, and     create a new field for session ID, this needs to be generated, most likely by the amount of time between each track. Note: This should be done  before answering any questions</li>
 <li>Create session buckets based on clustering.</li>
 <li>Create Top of Date Calculated field. This can be calculated via (Epoch Timestamps - (Timestamp % 86400).</li>
 <li>Identify any other possibly calculated fields</li>
-</ol>
+</ul>
 <h4 id="questions-to-ask-the-data"><a name="user-content-questions-to-ask-the-data" href="#questions-to-ask-the-data" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Questions to Ask the Data:</h4>
-<p>[x]<strong>Determine whether male and female listeners are significantly different in their overall listening (in terms of the count of tracklistens, or in terms of the total time spent listening)<br />
-[x]</strong>Break the user listening into sessions (exactly what is a listening session is up to you to define)<br />
-[x]<strong>Look for correlations between user demographic features (or their behavior) and their overall listening, or their average sessionlengths<br />
-[x]</strong>Find a clustering of user categories that delineates some interesting or useful behavior traits (or show that no clustering makes sense)<br />
-[x]Is there a correlation between Premium and Open accounts and the amount of tracks, or the types of tracks that users listen to<br />
-[ ]Identify the number of premium vs open by country and and see if there is a coorelation<br />
-[ ]Identify top songs per day and see if there are any trends. <br />
-[ ]Identify how many times individual users listen repeat listen to songs. Do this for two separate things, within a Session, and Across Sessions.<br />
-[ ]Identify whether or not users change from playlist to artist etc, within one session. Identify frequency across users, separate by type of   accounts and by gender, break this into multiple slices to view it.<br />
-[x] Create clustered sessions, and create buckets for each of those session lengths<br />
-[x] Breakdown Countries and number of Premium vs Open Account Types<br />
-[ ] Possible Regression to identify estimated time of listening sessions: Possible Model:  Age Bucket, Gender, Account Type, Account Age, <br />
-[x] Identify Number of sessions per day, slice and dice by different Demographics<br />
-[x] Identify the number of sessions and average session lenght, Also Average total listening length per day. Split this up by Open VSPremium.   Find some sort of threshold in the Open users…. If Open Users Listen past that threshold, maybe they have some kind of opportunityto get a  trial on premium. The Suggestion could be something like: “Based on how much you listen to music, you could listen to X moresongs, based on the     number of ads you get.”<br />
-[x] Create a Matrix by Country and tracks listened to. Run Hierarchal clustering analysis to see what groups emerge by Country. Could then further analyze the subgroups for song recommendation based on clumped countries<br />
-[x] For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do this    for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be  terminated because they were done with the session  </p></article></body></html>
+<p>[x]**Determine whether male and female listeners are significantly different in their overall listening (in terms of the count of tracklistens, or in terms of the total time spent listening)</p>
+<p>[x]**Break the user listening into sessions (exactly what is a listening session is up to you to define)</p>
+<p>[x]**Look for correlations between user demographic features (or their behavior) and their overall listening, or their average sessionlengths</p>
+<p>[x]**Find a clustering of user categories that delineates some interesting or useful behavior traits (or show that no clustering makes sense)</p>
+<p>[x]Is there a correlation between Premium and Open accounts and the amount of tracks, or the types of tracks that users listen to</p>
+<p>[x]Identify the number of premium vs open by country and and see if there is a coorelation</p>
+<p>[x]Identify top songs per day and see if there are any trends. </p>
+<p>[x]Identify how many times individual users listen repeat listen to songs. Do this for two separate things, within a Session, and Across Sessions.</p>
+<p>[ ]Identify whether or not users change from playlist to artist etc, within one session. Identify frequency across users, separate by type of   accounts and by gender, break this into multiple slices to view it.</p>
+<p>[x] Create clustered sessions, and create buckets for each of those session lengths</p>
+<p>[x] Breakdown Countries and number of Premium vs Open Account Types</p>
+<p>[ ] Possible Regression to identify estimated time of listening sessions: Possible Model:  Age Bucket, Gender, Account Type, Account Age, </p>
+<p>[x] Identify Number of sessions per day, slice and dice by different Demographics</p>
+<p>[x] Identify the number of sessions and average session lenght, Also Average total listening length per day. Split this up by Open VSPremium.   </p>
+<p>[ ] Find some sort of threshold in the Open users…. If Open Users Listen past that threshold, maybe they have some kind of opportunityto get a trial on premium. The Suggestion could be something like: “Based on how much you listen to music, you could listen to X moresongs, based on the  number of ads you get.”</p>
+<p>[x] Create a Matrix by Country and tracks listened to. Run Hierarchal clustering analysis to see what groups emerge by Country. Could then  further analyze the subgroups for song recommendation based on clumped countries</p>
+<p>[x] For each song, calculate the average length listened to that song, the max and min, and the std deviation…. It might be interesting, do  this   for every song except the song at the end of each session. The reason, we don’t want to include the end session because that song could be  terminated because they were done with the session  </p></article></body></html>
