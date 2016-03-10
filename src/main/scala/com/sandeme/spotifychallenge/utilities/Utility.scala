@@ -43,7 +43,7 @@ object Utility {
     val stats2 = new Stats(vector2)
     var residualProduct = 0.0
     for (i <- 0 to vector1.size - 1) {
-      residualProduct += (vector1(i) - stats1.mean) * (vector2(i) - stats2.mean)
+      residualProduct += stats1.residuals(i) * stats2.residuals(i)
     }
     residualProduct / Math.sqrt(stats1.sumDeviationSquared * stats2.sumDeviationSquared)
   }

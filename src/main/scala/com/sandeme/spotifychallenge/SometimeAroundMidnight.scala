@@ -28,9 +28,6 @@ object SometimeAroundMidnight {
 
     val songUsersTuple = loadSongAndUserFiles(userFile, songFile)
 
-    println("Run clustering Algorithm:")
-    runclusteringAlgorithm(songUsersTuple._1, songUsersTuple._2)
-    System.exit(0)
     println("Aggregating number of tracks listened by UTC day. Saving to output file top_of_day_aggregation.csv")
     outputTopOfDayCounts(songUsersTuple._1)
     println("Aggregating number of tracks listened by UTC hour. Saving to output file. default = top_of_hour_aggregation.csv")
@@ -47,6 +44,11 @@ object SometimeAroundMidnight {
     UserSongAnalysis.statsByProductType(songUsersTuple._2)
     // Users who changed status from or to premium during the session
     UserSongAnalysis.statsByUsersProductChange(songUsersTuple._2)
+
+    // Run clustering Algorithm on the User data versus tracks. See if there is a clustering of Countries
+    println("Run clustering Algorithm:")
+    runClusteringAlgorithm(songUsersTuple._1, songUsersTuple._2)
+    System.exit(0)
   }
 
 
@@ -114,20 +116,36 @@ object SometimeAroundMidnight {
   }
 
 
-  def runclusteringAlgorithm(songs: Array[SongRecord], users: Map[String, User]) = {
-    println("Setting country for every song record loop through each record and go ahead and add each one there: " + System.currentTimeMillis())
-    songs.foreach(song => song.countryId = users(song.userId).country)
-    val labels: Array[String] = users.map(user => user._2.country).toArray.distinct.sorted
-    val distinctSongs: Array[String] = songs.map(_.trackId).distinct.sorted
-    val matrix = Array.ofDim[Double](labels.size, distinctSongs.size)
+  /**
+    * Terrible idea to run this if it's over every track. It will create a 136000 x 69 matrix
+    * @param songs
+    * @param users
+    */
+  def runClusteringAlgorithm(songs: Array[SongRecord], users: Map[String, User]) = {
 
-    for(i <- 0 to labels.size - 1) {
-      for(j <- 0 to distinctSongs.size - 1) {
-        matrix(i)(j) =  songs.filter(_.trackId.equals(distinctSongs(j))).filter(_.countryId.equals(labels(i))).size.toDouble
+
+    println("Be aware it took around 2 hours to run this... The bottleneck is mapping the correct counts to the correct" +
+      "part of the array. mSetting country for every song record loop through each record and go ahead and add each one there: " + System.currentTimeMillis())
+    songs.foreach(song => song.countryId = users(song.userId).country)
+    val labels = users.map(user => user._2.country).toArray.distinct.sorted.toIndexedSeq
+    val distinctSongs = songs.map(_.trackId).distinct.sorted.toIndexedSeq
+    val sortedTrackTuple = songs.map(track => (track.trackId, track.countryId)).sorted
+    val matrix = Array.ofDim[Double](labels.size, distinctSongs.size)
+    var currentCountry = 0
+    var currentTrack = 0
+    var tracksUpdated = 0
+    for (i <- 0 to sortedTrackTuple.size - 1) {
+      currentTrack = distinctSongs.indexOf(sortedTrackTuple(i)._1)
+      currentCountry = labels.indexOf(sortedTrackTuple(i)._2)
+      matrix(currentCountry)(currentTrack) += 1.0
+      tracksUpdated += 1
+      if (tracksUpdated % 10000 == 0) {
+        println(s"Tracks updated:\t${tracksUpdated} + ${System.currentTimeMillis}")
       }
     }
+
     println("Going over the clustering Algorithm: " + System.currentTimeMillis())
     println("Label: " + matrix.size)
-    Clustering.hCluster(matrix)
+    Clustering.printCluster(Clustering.hCluster(matrix)(0), labels = Some(labels))
   }
 }

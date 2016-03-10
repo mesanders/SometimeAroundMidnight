@@ -21,20 +21,19 @@ object Clustering {
 
     var idr = 0
     val clusters: scala.collection.mutable.ArrayBuffer[Bicluster] = scala.collection.mutable.ArrayBuffer()
-    clusters ++ rows.map(row => new Bicluster(vector =  row, id = Option(idr)))
+    rows.foreach{row => clusters.append(new Bicluster(vector =  row, id = Option(idr))); idr = idr + 1}
 
     var currentClusterId = -1
-    while (clusters.size - 1 > 1) {
-      println("Cluster Size: " + clusters.size)
+    while (clusters.size - 1 > 0) {
       var lowestPair = (0, 1)
       var closest = Utility.correlation(clusters(0).vector, clusters(1).vector)
 
 
       // loop through each pair looking for smallest distance
       for (i <- 0 to clusters.size - 1) {
-        for (j <- 1 to clusters.size - 1) {
+        for (j <- i + 1 to clusters.size - 1) {
           // cache is the cache of distance calculations
-          if(cache.contains(clusters(i).id.get,clusters(j).id.get)) {
+          if(!cache.contains(clusters(i).id.get,clusters(j).id.get)) {
             cache((clusters(i).id.get, clusters(j).id.get)) = Utility.correlation(clusters(i).vector, clusters(j).vector)
           }
 
@@ -52,19 +51,31 @@ object Clustering {
       for (i <- 0 to clusters(lowestPair._1).vector.size - 1) {
         arrayBuffer.append((clusters(lowestPair._1).vector(i) + clusters(lowestPair._2).vector(i)).toDouble / 2.0)
       }
+
       val mergedVec: DblVector = arrayBuffer.toArray
 
       // create new cluster
-      var newCluster = Bicluster(mergedVec, left = Option(clusters(lowestPair._1)), right = Option(clusters(lowestPair._2)), distance = closest, id =Option(currentClusterId))
+      val newCluster = Bicluster(mergedVec, left = Option(clusters(lowestPair._1)), right = Option(clusters(lowestPair._2)), distance = closest, id =Option(currentClusterId))
 
       currentClusterId -= 1
-      clusters.remove(lowestPair._1)
       clusters.remove(lowestPair._2)
+      clusters.remove(lowestPair._1)
+      clusters.append(newCluster)
     }
 
-    clusters(0)
+    clusters
   }
 
+  def printCluster(bicluster: Bicluster, labels: Option[IndexedSeq[String]] = None, n: Int = 0): Unit = {
+    for (i <- 0 to n) { print ("  ") }
+      if (bicluster.id.get < 0) println("-")
+      else
+        if (labels.isEmpty)
+          println(bicluster.id.get)
+        else
+         println(labels.get(bicluster.id.get))
 
-
+    if (!bicluster.left.isEmpty) printCluster(bicluster.left.get, labels = labels, n = n + 1)
+    if (!bicluster.right.isEmpty) printCluster(bicluster.right.get, labels = labels, n = n + 1)
+  }
 }

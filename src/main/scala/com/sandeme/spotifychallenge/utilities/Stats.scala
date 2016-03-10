@@ -40,8 +40,8 @@ class Stats[T <% Double](private var values: DVector[T]) {
   lazy val varOverSampleSize:Double = variance / size
   lazy val sumSqr = stats.sumSqr
   lazy val sumDeviationSquared = values.map(x => Math.pow(x - mean, 2)).sum
-  lazy val sumOfDeviation = values.map(x => x - mean).sum
-
+  lazy val residuals: DblVector = values.map(x => x - mean)
+  lazy val sumOfDeviation = residuals.sum
 
   /**
     * Statistics are usually used to normalize data into probability value [0, 1] as required by
