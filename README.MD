@@ -8,15 +8,13 @@
 
 
 # High Level Analysis:
-Based on the two tables, I didn't find anything that, at this point that I could suggest a change to the product itself. There are a lot of variables and unknowns that I dont' have access to. 
+Based on the two tables, I didn't find anything that, at this point that I could suggest a change to the product itself. One of the more interesting trends I noticed was the amount of users that changed during the 14 day period was roughly 3.8% of the users either changed their account status. The percentage of those 3.8% that went to premium was 67% of that group that changed. Premium users listen to more music than the other types of users. They are more engaged with the product. 
 
 The users in the sample were fairly even at a 48/52% split. There were roughly 26 unknown users.  Playlists outnumbered everything else on the unique context. 
 
 US users were found to listen to more music than Non-US users. This statistic is why I chose to break down the type of users by countries. I decided to use hierarchical clustering. Despite the long run time because, I decided to do it based on the count for each track by country. This took a long time, but broke down the countries into a nice tree, which is below. Further analysis could be done amongst the groups to find out patterns. 
 
-I broke down the different sessions by day and by hour to see if I can find trends among days. Each day the number of amount each user listen were consistent. 
-
-Premium Users listen to to more music than non-premium users. Which would make sense. Also during this session the users that changed product throughout the 14 day period about 62.5% of the switch went from open to premium. 
+I broke down the different sessions by day and by hour to see if I can find trends among days. Each day the number of amount each user listen were consistent.  
 
 ## My approach to the overall task.
 

@@ -98,3 +98,7 @@ SELECT COUNT(*) FROM (SELECT DISTINCT users.user_id, product FROM users JOIN end
 SELECT track_id, COUNT(track_id) as LISTENS FROM endsong JOIN users ON users.user_id = endsong.user_id WHERE gender ='female' GROUP BY track_id ORDER BY LISTENS DESC LIMIT 10;
 
 SELECT track_id, COUNT(track_id) as LISTENS FROM endsong JOIN users ON users.user_id = endsong.user_id WHERE gender ='male' GROUP BY track_id ORDER BY LISTENS DESC LIMIT 10;
+
+.print
+.print "**Number of distinct premium accounts By country, Top 20 countries**"
+select country,  count(distinct users.user_id) as counted from endsong join users on endsong.user_id = users.user_id  WHERE product = 'premium' group by country ORDER BY counted desc LIMIT 20;

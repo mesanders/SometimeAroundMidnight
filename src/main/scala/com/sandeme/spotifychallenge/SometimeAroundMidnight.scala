@@ -1,6 +1,6 @@
 package com.sandeme.spotifychallenge
 
-import java.io.File
+import java.io.{PrintWriter, File}
 import java.util.logging.Logger
 
 import com.sandeme.spotifychallenge.utilities.Utility.DblVector
@@ -100,11 +100,7 @@ object SometimeAroundMidnight {
     }
   }
 
-
-  def outputDataPartionedIntoDailyBuckets
-
-
-  /**
+   /**
     * Very lightweight command line parser, assumes key value pair separated by =
     * @param args each arg should be K,V separated by '='
     * @return Mapping of K,V args
