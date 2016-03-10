@@ -8,13 +8,15 @@
 
 
 # High Level Analysis:
-Based on the two tables, I didn't find anything that, at this point that I could suggest a change to the product itself. One of the more interesting trends I noticed was the amount of users that changed during the 14 day period was roughly 3.8% of the users either changed their account status. The percentage of those 3.8% that went to premium was 67% of that group that changed. Premium users listen to more music than the other types of users. They are more engaged with the product. 
+Based on the two tables, I didn't find anything that, at this point that I could suggest a change to the product itself. Access to more data could reveal better insights into suggestions on the product itself. The main thing that the data told me was that most of the premium users are in the United States. Premium users use the service far more than other users, and there is a weak to moderate correlation between the age of the account and premium users. There is also a weak correlation between premium users and the country. It would be nice to experiment further with users to see how user experience plays into paying for a premium service based on the positive correlation between the amount users use the service. 
 
-The users in the sample were fairly even at a 48/52% split. There were roughly 26 unknown users.  Playlists outnumbered everything else on the unique context. 
+One of the more interesting trends I noticed was the amount of users that changed during the 14 day period was roughly 3.8% of the users either changed their account status. The percentage of those 3.8% that went to premium was 67% of that group that changed. Premium users listen to more music than the other types of users. They are more engaged with the product. The top 5-10 countries by number of users had the same set of countries with premium accounts. I was trying to use differnet lenses to look at how premium users were set up because my initial reaction is to see if there was a way to correlate how premium users differentiated with the product. More heterogenous data sets would be helpful. 
 
-US users were found to listen to more music than Non-US users. This statistic is why I chose to break down the type of users by countries. I decided to use hierarchical clustering. Despite the long run time because, I decided to do it based on the count for each track by country. This took a long time, but broke down the countries into a nice tree, which is below. Further analysis could be done amongst the groups to find out patterns. 
+The users in the sample were fairly even at a 48/52% split. There were roughly 26 unknown users.  Playlists outnumbered everything else on the unique context. The numbers from the code is below. 
 
-I broke down the different sessions by day and by hour to see if I can find trends among days. Each day the number of amount each user listen were consistent.  
+US users were found to listen to more music than Non-US users. This statistic is why I chose to break down the type of users by countries. I decided to use hierarchical clustering. Despite the long run time because, I decided to do it based on the count for each track by country. This took a long time, but broke down the countries into a nice tree, which is below. Further analysis could be done amongst the groups to find out patterns. There are 4 main groups that the countries were broken down into.  
+
+I broke down the different sessions by day and by hour to see if I can find trends among days. My definition of a session was any set of tracks that were played within a 15 minute window + the length of the previous song played. As a user, there are often times where I get up or get interrupted, but I would consider 2 hours of listening to music a 2 hour session, even if I pause. Each day the number of amount each user listen were consistent.  I plotted the top of day aggregation and top of hour aggregations. After running the code it will generate two separate files with those trends. You could see oscilating number of listeners per hour, which would correlate to the number of users in different time zones. There are opportunities to expand marketshare. 
 
 ## My approach to the overall task.
 
@@ -32,7 +34,7 @@ First things first. Hi. Thank you. I'm excited to be here. Blork. Wait, that doe
 
 - Set up pom.xml for Maven. Next make sure I could compile and run by script and not just in the IDE. Decide whether or not to use libraries. This was a tough decision, I decided to use only scalatest, anything else I would write myself. Everything that was written would be checked with excel or an online calculator.  
 
-- Scala: 
+
 1. Create two classes with companion objects that will load the two major data structures based on the file format. 
 2. Make sure that each user can be associated to a list of Songs (Build the framework to do any Student T Tests against user by demographic, and also sessionizing the data). 2) Create a Stats class that would hold vector and possibly matricies for a lot of the calculations. 
 3. Create Utility class that would hold a lot of the statstical analysis that will use the Stats class.  
@@ -151,6 +153,28 @@ AU,216
 CA,196
 PH,174
 CL,139
+
+**Number of distinct premium accounts By country, Top 20 countries**
+US|587
+GB|137
+SE|117
+DE|81
+BR|66
+NL|64
+MX|61
+AU|53
+NO|53
+ES|47
+FR|43
+AR|41
+IT|36
+CA|34
+FI|31
+DK|30
+TR|25
+NZ|22
+PH|17
+BE|15
 
 **Total Number of Users not in the US:** 
 6418
