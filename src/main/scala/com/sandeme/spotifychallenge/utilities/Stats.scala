@@ -69,3 +69,4 @@ class Stats[T <% Double](private var values: DVector[T]) {
   }
 }
 
+

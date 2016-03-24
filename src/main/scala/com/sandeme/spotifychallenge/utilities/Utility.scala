@@ -51,4 +51,12 @@ object Utility {
   def coefficientDetermination(vector1: DblVector, vector2: DblVector): Double = {
     Math.pow(correlation(vector1, vector2), 2)
   }
+
+  def xysum(x: DblVector, y: DblVector): Double = {
+    var xysumRet = 0.0
+    for (i <- 0 to x.size - 1) {
+      xysumRet += (x(i) * y(i))
+    }
+    xysumRet
+  }
 }
